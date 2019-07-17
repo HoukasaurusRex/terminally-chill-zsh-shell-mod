@@ -1,0 +1,23 @@
+{
+  "name": "bash",
+  "version": "1.0.0",
+  "description": "bash_profile and shell functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pterobyte/bash.git"
+  },
+  "keywords": [
+    "bash_profile",
+    "shell"
+  ],
+  "author": "JT Houk <jt1992@gmail.com> (https://jt.houk.space/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Pterobyte/bash/issues"
+  },
+  "homepage": "https://github.com/Pterobyte/bash#readme"
+}
