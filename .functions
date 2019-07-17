@@ -2,7 +2,7 @@
 function help {
   if [ $1 == 'help' ]; then
     echo $2
-    return
+    return 1
   fi
 }
 
