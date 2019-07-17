@@ -1,0 +1,84 @@
+function help               # Show a list of functions
+{
+  echo ''
+  echo ${BOLD} 'FUNCTIONS ===============================>'
+  echo ${GREEN}
+  grep '^function' $HOME/.functions
+  echo ${RESET}
+  echo ${BOLD} 'ALIASES   ===============================>'
+  echo ${BLUE}
+  grep '^alias' $HOME/.aliases
+}
+
+function init               # Start new project
+{
+  if [ $1 == 'help' ]; then
+    echo 'Usage: init [node: if you want to initialize a node project]'
+    return
+  fi
+  git init
+  if [ $1 == 'node' ]; then
+    npx license $(npm get init-license) -o '$(npm get init-author-name)' > LICENSE
+    npx gitignore node
+    npx covgen '$(npm get init-author-email)'
+    npm init -y
+    npx readme-md-generator
+  fi
+  git add -A
+  git commit -m 'Initial commit'
+}
+
+function listening          # Check Ports
+{
+  if [ $# -eq 0 ]; then
+    sudo lsof -iTCP -sTCP:LISTEN -n -P
+  elif [ $# -eq 1 ]; then
+    sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
+  else
+    echo 'Usage: listening [pattern]'
+  fi
+}
+
+function damn               # Reinstall node_modules
+{
+  rm -rf node_modules
+  if [ $1 == 'yarn' ]; then
+    yarn install
+  elif [ $1 == 'npm' ]; then
+    npm install
+  else
+    echo 'Usage: damn [yarn | npm]'
+  fi
+}
+
+function untrack            # Fix untracked files in git
+{
+  git rm -r --cached .
+  git add .
+  git commit -m 'fixed untracked files'
+}
+
+function sites              # cd to Sites directory
+{
+  if [ $1 ]; then
+    cd $HOME/$1/Sites
+  else
+    cd $HOME/Sites
+  fi
+}
+
+function global             # List global dependencies
+{
+  if [ $1 == 'yarn' ]; then
+    yarn global list --depth=0
+  elif [ $1 == 'npm' ]; then
+    npm list -g --depth=0
+  else
+    echo 'Usage: global [yarn | npm]'
+  fi
+}
+
+function printenv-heroku    # Download environment variables from Heroku
+{
+  heroku config -s > .env
+}
