@@ -26,5 +26,5 @@ alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall 
 alias webserver='cd /Library/WebServer/Documents'
 
 alias readme='npx readme-md-generator'
-alias gitignore='curl -sLw "\n" https://www.gitignore.io/api/\$@ ;'
 alias license='npx license $(npm get init-license) -o $(npm get init-author-name) > LICENSE'
+alias covgen='npx covgen $(npm get init-author-email)'

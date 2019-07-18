@@ -1,4 +1,4 @@
-function help               # Show a list of functions
+function help                 # Show a list of functions
 {
   echo ''
   echo ${BOLD} 'FUNCTIONS ===============================>'
@@ -10,20 +10,45 @@ function help               # Show a list of functions
   grep '^alias' $HOME/.aliases
 }
 
-function init               # Start new project
+function gitignore            # Generate gitignore
 {
-  if [ $1 == 'help' ]; then
-    echo 'Usage: init [node: if you want to initialize a node project]'
+  if [ $1 ]; then
+    curl -sLw "\n" 'https://www.gitignore.io/api/'$1 ;
+  else
+    echo 'Usage: ${GREEN} gitignore ${RESET} [source]'
+  fi
+}
+
+function node-create           # Start new node project
+{
+  if [ $2 ]; then
+    if [ $1 == 'express' ]; then
+      npx express-generator $2 --no-view
+      npx eslint --init
+    elif [ $1 == 'vue' ]; then
+      npx @vue/cli create $2
+    elif [ $1 == 'quasar' ]; then
+      npx @quasar/cli create $2
+    elif [ $1 == 'react' ]; then
+      npx create-react-app $2
+    elif [ $1 == 'koa' ]; then
+      npx koa-generator $2 --hbs --css stylus
+      npx eslint --init
+    else
+      echo 'Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}'
+      return
+    fi
+  else
+    echo 'Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}'
     return
   fi
+  cd $2
+  npm init -y
+  license
+  curl -sLw "\n" 'https://www.gitignore.io/api/node' ;
+  covgen
+  readme
   git init
-  if [ $1 == 'node' ]; then
-    npx license $(npm get init-license) -o '$(npm get init-author-name)' > LICENSE
-    npx gitignore node
-    npx covgen '$(npm get init-author-email)'
-    npm init -y
-    npx readme-md-generator
-  fi
   git add -A
   git commit -m 'Initial commit'
 }
@@ -41,13 +66,25 @@ function listening          # Check Ports
 
 function damn               # Reinstall node_modules
 {
-  rm -rf node_modules
-  if [ $1 == 'yarn' ]; then
-    yarn install
-  elif [ $1 == 'npm' ]; then
-    npm install
+  if [ $1 ]; then
+    if [ $1 == 'yarn' ]; then
+      rm -rf node_modules
+      yarn install
+    elif [ $1 == 'npm' ]; then
+      rm -rf node_modules
+      npm install
+    
+    else
+      echo 'Usage: damn [yarn | npm]'
+    fi
   else
-    echo 'Usage: damn [yarn | npm]'
+    if [ command -v yarn ]; then
+      rm -rf node_modules
+      yarn install
+    else
+      rm -rf node_modules
+      npm install
+    fi
   fi
 }
 
@@ -69,10 +106,14 @@ function sites              # cd to Sites directory
 
 function global             # List global dependencies
 {
-  if [ $1 == 'yarn' ]; then
-    yarn global list --depth=0
-  elif [ $1 == 'npm' ]; then
-    npm list -g --depth=0
+  if [ $1 ]; then
+    if [ $1 == 'yarn' ]; then
+      yarn global list --depth=0
+    elif [ $1 == 'npm' ]; then
+      npm list -g --depth=0
+    else
+      echo 'Usage: global [yarn | npm]'
+    fi
   else
     echo 'Usage: global [yarn | npm]'
   fi
