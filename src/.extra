@@ -1,0 +1,7 @@
+if tput setaf 1 &> /dev/null; then
+  if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
+    PINK=$(tput setaf $(fromhex ff6c8c))
+    YELLOW=$(tput setaf $(fromhex ffee6c))
+    BLUE=$(tput setaf $(fromhex 6cacff))
+    fi
+  fi

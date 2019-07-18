@@ -27,3 +27,4 @@ alias webserver='cd /Library/WebServer/Documents'
 
 alias readme='npx readme-md-generator'
 alias gitignore='curl -sLw "\n" https://www.gitignore.io/api/\$@ ;'
+alias license='npx license $(npm get init-license) -o $(npm get init-author-name) > LICENSE'

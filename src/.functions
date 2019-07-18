@@ -2,11 +2,11 @@ function help               # Show a list of functions
 {
   echo ''
   echo ${BOLD} 'FUNCTIONS ===============================>'
-  echo ${GREEN}
+  echo ${PINK}
   grep '^function' $HOME/.functions
   echo ${RESET}
   echo ${BOLD} 'ALIASES   ===============================>'
-  echo ${BLUE}
+  echo ${YELLOW}
   grep '^alias' $HOME/.aliases
 }
 
@@ -76,6 +76,17 @@ function global             # List global dependencies
   else
     echo 'Usage: global [yarn | npm]'
   fi
+}
+
+function fromhex            # Converts hexadecimal color code to tput color index
+{
+    hex=${1#"#"}
+    r=$(printf '0x%0.2s' "$hex")
+    g=$(printf '0x%0.2s' ${hex#??})
+    b=$(printf '0x%0.2s' ${hex#????})
+    printf '%03d' "$(( (r<75?0:(r-35)/40)*6*6 + 
+                       (g<75?0:(g-35)/40)*6   +
+                       (b<75?0:(b-35)/40)     + 16 ))"
 }
 
 function printenv-heroku    # Download environment variables from Heroku

@@ -9,7 +9,7 @@
 ## Install
 
 ```sh
-npm install
+sh install.sh
 ```
 
 ## Author
@@ -30,7 +30,3 @@ Feel free to check [issues page](https://github.com/Pterobyte/bash/issues).
 Give a ⭐️ if this project helped you!
 
 [![support us](https://img.shields.io/badge/become-a patreon%20us-orange.svg?cacheSeconds=2592000)](https://www.patreon.com/TerminallyChill)
-
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
