@@ -1,6 +1,10 @@
-# Welcome to Bash 👋
+# Welcome to the TerminallyChill Bash Setup 👋
+
 ![Version](https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000)
 [![Twitter: CapnAwesome](https://img.shields.io/twitter/follow/CapnAwesome.svg?style=social)](https://twitter.com/CapnAwesome)
+
+![terminally chill logo](assets/screenshots/terminally-chill.png)
+![functions and aliases](assets/screenshots/functions-and-aliases.png)
 
 > Custom bash_profile and shell functions
 
@@ -29,4 +33,6 @@ Feel free to check [issues page](https://github.com/Pterobyte/bash/issues).
 
 Give a ⭐️ if this project helped you!
 
-[![support us](https://img.shields.io/badge/become-a patreon%20us-orange.svg?cacheSeconds=2592000)](https://www.patreon.com/TerminallyChill)
+<a href="https://www.patreon.com/TerminallyChillSoftware" rel="nofollow">
+  <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
+</a>
