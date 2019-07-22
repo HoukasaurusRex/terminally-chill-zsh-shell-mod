@@ -24,7 +24,7 @@ function node-create           # Start new node project
   if [ $2 ]; then
     if [ $1 == 'express' ]; then
       npx express-generator $2 --no-view
-      npx eslint --init
+      gen-eslint
     elif [ $1 == 'vue' ]; then
       npx @vue/cli create $2
     elif [ $1 == 'quasar' ]; then
@@ -33,7 +33,7 @@ function node-create           # Start new node project
       npx create-react-app $2
     elif [ $1 == 'koa' ]; then
       npx koa-generator $2 --hbs --css stylus
-      npx eslint --init
+      gen-eslint
     else
       echo 'Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}'
       return
@@ -44,13 +44,27 @@ function node-create           # Start new node project
   fi
   cd $2
   npm init -y
-  license
+  gen-license
   curl -sLw "\n" 'https://www.gitignore.io/api/node' ;
-  covgen
-  readme
+  gen-covgen
+  gen-readme
+  gen-contributing
   git init
   git add -A
   git commit -m 'Initial commit'
+}
+
+function global-install
+{
+  local nodeModules=(@vue/cli bit generate-contributing generate-gh-repo generate-license mocha yarn npm)
+  if [ $1 ] && [ $1 == 'yarn' ]; then
+    echo "${YELLOW} yarn ${RESET} add -g ${PINK} $nodeModules ${RESET}"
+    yarn add -g $nodeModules
+  else
+    echo "${YELLOW} npm ${RESET} install -g ${PINK} $nodeModules ${RESET}"
+    npm install -g $nodeModules
+  fi
+    
 }
 
 function listening          # Check Ports
@@ -64,25 +78,24 @@ function listening          # Check Ports
   fi
 }
 
-function damn               # Reinstall node_modules
+function damn               # Reinstall globalModules
 {
   if [ $1 ]; then
     if [ $1 == 'yarn' ]; then
-      rm -rf node_modules
+      rm -rf globalModules
       yarn install
     elif [ $1 == 'npm' ]; then
-      rm -rf node_modules
+      rm -rf globalModules
       npm install
-    
     else
       echo 'Usage: damn [yarn | npm]'
     fi
   else
     if [ command -v yarn ]; then
-      rm -rf node_modules
+      rm -rf globalModules
       yarn install
     else
-      rm -rf node_modules
+      rm -rf globalModules
       npm install
     fi
   fi
