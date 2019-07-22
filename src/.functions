@@ -1,13 +1,13 @@
 function help                 # Show a list of functions
 {
-  echo ''
+  echo "\n"
   echo ${BOLD} 'FUNCTIONS ===============================>'
   echo ${PINK}
-  grep '^function' $HOME/.functions
+  grep "^function" $HOME/.functions
   echo ${RESET}
   echo ${BOLD} 'ALIASES   ===============================>'
   echo ${YELLOW}
-  grep '^alias' $HOME/.aliases
+  grep "^alias" $HOME/.aliases
 }
 
 function gitignore            # Generate gitignore
@@ -15,7 +15,7 @@ function gitignore            # Generate gitignore
   if [ $1 ]; then
     curl -sLw "\n" 'https://www.gitignore.io/api/'$1 ;
   else
-    echo 'Usage: ${GREEN} gitignore ${RESET} [source]'
+    echo "Usage: ${GREEN} gitignore ${RESET} [source]"
   fi
 }
 
@@ -24,7 +24,7 @@ function node-create           # Start new node project
   if [ $2 ]; then
     if [ $1 == 'express' ]; then
       npx express-generator $2 --no-view
-      gen-eslint
+      npx eslint init
     elif [ $1 == 'vue' ]; then
       npx @vue/cli create $2
     elif [ $1 == 'quasar' ]; then
@@ -33,30 +33,30 @@ function node-create           # Start new node project
       npx create-react-app $2
     elif [ $1 == 'koa' ]; then
       npx koa-generator $2 --hbs --css stylus
-      gen-eslint
+      npx eslint init
     else
-      echo 'Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}'
+      echo "Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}"
       return
     fi
   else
-    echo 'Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}'
+    echo "Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}"
     return
   fi
   cd $2
   npm init -y
   gen-license
-  curl -sLw "\n" 'https://www.gitignore.io/api/node' ;
   gen-covgen
   gen-readme
   gen-contributing
   git init
+  gitignore node
   git add -A
   git commit -m 'Initial commit'
 }
 
 function global-install
 {
-  local nodeModules=(@vue/cli bit generate-contributing generate-gh-repo generate-license mocha yarn npm)
+  local nodeModules=(generate-contributing generate-gh-repo generate-license yarn npm)
   if [ $1 ] && [ $1 == 'yarn' ]; then
     echo "${YELLOW} yarn ${RESET} add -g ${PINK} $nodeModules ${RESET}"
     yarn add -g $nodeModules
@@ -78,24 +78,24 @@ function listening          # Check Ports
   fi
 }
 
-function damn               # Reinstall globalModules
+function damn               # Reinstall node_modules
 {
   if [ $1 ]; then
     if [ $1 == 'yarn' ]; then
-      rm -rf globalModules
+      rm -rf node_modules
       yarn install
     elif [ $1 == 'npm' ]; then
-      rm -rf globalModules
+      rm -rf node_modules
       npm install
     else
-      echo 'Usage: damn [yarn | npm]'
+      echo "Usage: damn [${YELLOW} yarn ${RESET} | ${YELLOW} npm ${RESET}]"
     fi
   else
     if [ command -v yarn ]; then
-      rm -rf globalModules
+      rm -rf node_modules
       yarn install
     else
-      rm -rf globalModules
+      rm -rf node_modules
       npm install
     fi
   fi
@@ -125,10 +125,10 @@ function global             # List global dependencies
     elif [ $1 == 'npm' ]; then
       npm list -g --depth=0
     else
-      echo 'Usage: global [yarn | npm]'
+      echo "Usage: global [${YELLOW} yarn ${RESET} | ${YELLOW} npm ${RESET}]"
     fi
   else
-    echo 'Usage: global [yarn | npm]'
+    echo "Usage: global [${YELLOW} yarn ${RESET} | ${YELLOW} npm ${RESET}]"
   fi
 }
 
