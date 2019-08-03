@@ -19,9 +19,27 @@ function gitignore            # Generate gitignore
   fi
 }
 
+function bash-mail
+{
+  local help="Usage: bash-mail ${YELLOW}[ open | check | clean ] ${RESET}"
+  if [ $1 ]; then
+    if [ $1 == 'open' ]; then
+      code /var/mail/$USER
+    elif [ $1 == 'check' ]; then
+      cat /var/mail/$USER
+    elif [ $1 == 'clean' ]; then
+      sudo rm -i /var/mail/$USER
+    else
+      echo $help
+    fi
+  else
+    echo $help
+  fi
+}
+
 function node-create           # Start new node project
 {
-  help="Usage: init ${GREEN} [basic | express | koa | vue | nuxt | quasar| react ] ${YELLOW} [project-name] ${RESET}"
+  local help="Usage: node-create ${YELLOW}[basic | express | koa | vue | nuxt | quasar| react ] ${PINK}[project-name] ${RESET}"
   if [ $2 ]; then
     if [ $1 == 'basic' ]; then
     elif [ $1 == 'express' ]; then
