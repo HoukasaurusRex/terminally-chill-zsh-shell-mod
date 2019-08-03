@@ -21,8 +21,10 @@ function gitignore            # Generate gitignore
 
 function node-create           # Start new node project
 {
+  help="Usage: init ${GREEN} [basic | express | koa | vue | nuxt | quasar| react ] ${YELLOW} [project-name] ${RESET}"
   if [ $2 ]; then
-    if [ $1 == 'express' ]; then
+    if [ $1 == 'basic' ]; then
+    elif [ $1 == 'express' ]; then
       npx express-generator $2 --no-view
       npx eslint init
     elif [ $1 == 'vue' ]; then
@@ -34,12 +36,14 @@ function node-create           # Start new node project
     elif [ $1 == 'koa' ]; then
       npx koa-generator $2 --hbs --css stylus
       npx eslint init
+    elif [ $1 == 'nuxt' ]; then
+      npx create-nuxt-app $2
     else
-      echo "Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}"
+      echo $help
       return
     fi
   else
-    echo "Usage: init ${GREEN} [express | koa | vue | quasar| react ] ${YELLOW} [project-name] ${RESET}"
+    echo $help
     return
   fi
   cd $2
