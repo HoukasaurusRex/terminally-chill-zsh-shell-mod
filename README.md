@@ -16,7 +16,7 @@
 ## Install
 
 ```sh
-sh install.sh
+make all
 ```
 
 ## Author
@@ -45,3 +45,10 @@ Give a ⭐️ if this project helped you!
 Copyright © 2019 [JT Houk](https://github.com/Pterobyte).
 
 This project is [MIT](https://github.com/Pterobyte/bash/tree/master/LICENSE) licensed.
+
+### ☑️TODO
+
+- [ ] Move scripts into custom dotfiles and just source them in .zshrc
+- [ ] allow cherry picking
+- [ ] Upgrade from git
+- [ ] Print help a little cleaner

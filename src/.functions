@@ -19,7 +19,7 @@ function gitignore            # Generate gitignore
   fi
 }
 
-function bash-mail
+function bash-mail            # Interacts with Bash Mail in /var/mail
 {
   local help="Usage: bash-mail ${YELLOW}[ open | check | clean ] ${RESET}"
   if [ $1 ]; then
@@ -44,7 +44,7 @@ function node-create           # Start new node project
     if [ $1 == 'basic' ]; then
     elif [ $1 == 'express' ]; then
       npx express-generator $2 --no-view
-      npx eslint init
+      npx eslint --init
     elif [ $1 == 'vue' ]; then
       npx @vue/cli create $2
     elif [ $1 == 'quasar' ]; then
@@ -53,7 +53,7 @@ function node-create           # Start new node project
       npx create-react-app $2
     elif [ $1 == 'koa' ]; then
       npx koa-generator $2 --hbs --css stylus
-      npx eslint init
+      npx eslint --init
     elif [ $1 == 'nuxt' ]; then
       npx create-nuxt-app $2
     else
@@ -70,14 +70,15 @@ function node-create           # Start new node project
   gen-covgen
   gen-readme
   gen-contributing
-  git init
+  gen-repo
   gitignore node
   git add -A
   git commit -m 'Initial commit'
+  code .
   # TODO: ask to generate gh repo
 }
 
-function global-install
+function global-install     # Handles global node modules
 {
   # TODO: add to 'global' function
   local nodeModules=(generate-contributing generate-gh-repo generate-license yarn npm)
@@ -173,4 +174,11 @@ function fromhex            # Converts hexadecimal color code to tput color inde
 function printenv-heroku    # Download environment variables from Heroku
 {
   heroku config -s > .env
+}
+
+function upgrade            # Upgrades shell profiles to latest release
+{
+  if [ -f .oh-my-zsh/tools/upgrade.sh ]; then
+    sh .oh-my-zsh/tools/upgrade.sh
+  fi
 }

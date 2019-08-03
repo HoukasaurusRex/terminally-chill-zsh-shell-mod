@@ -149,6 +149,7 @@ echo -e "\033]6;1;bg;green;brightness;26\a"
 echo -e "\033]6;1;bg;blue;brightness;33\a"
 
 autoload -U +X bashcompinit && bashcompinit
+compinit -d ~/.cache/zsh/zcompdump-$ZSH_VERSION
 # complete -o nospace -F /usr/local/bin/aliyun aliyun
 
 # tabtab source for serverless package
