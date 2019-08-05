@@ -182,3 +182,14 @@ function upgrade            # Upgrades shell profiles to latest release
     sh .oh-my-zsh/tools/upgrade.sh
   fi
 }
+
+function mkcd               # Make directory and immediately cd into it
+{
+  if [ ! -n "$1" ]; then
+    echo "Usage: mkcd [directory-name]"
+  elif [ -d $1 ]; then
+    echo "\`$1' already exists"
+  else
+    mkdir $1 && cd $1
+  fi
+}
