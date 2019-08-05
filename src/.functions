@@ -69,6 +69,7 @@ function node-create           # Start new node project
   gen-license
   gen-covgen
   gen-readme
+  mkdir ".github"
   gen-contributing
   gen-repo
   gitignore node
