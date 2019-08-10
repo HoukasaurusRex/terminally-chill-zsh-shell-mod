@@ -42,9 +42,9 @@ function node-create           # Start new node project
   local help="Usage: node-create ${YELLOW}[basic | express | koa | vue | nuxt | quasar| react ] ${PINK}[project-name] ${RESET}"
   if [ $2 ]; then
     if [ $1 == 'basic' ]; then
+      mkdir $2
     elif [ $1 == 'express' ]; then
-      npx express-generator $2 --no-view
-      npx eslint --init
+      npx express-generator $2 --no-view --es6
     elif [ $1 == 'vue' ]; then
       npx @vue/cli create $2
     elif [ $1 == 'quasar' ]; then
@@ -53,7 +53,6 @@ function node-create           # Start new node project
       npx create-react-app $2
     elif [ $1 == 'koa' ]; then
       npx koa-generator $2 --hbs --css stylus
-      npx eslint --init
     elif [ $1 == 'nuxt' ]; then
       npx create-nuxt-app $2
     else
@@ -66,11 +65,12 @@ function node-create           # Start new node project
   fi
   cd $2
   npm init -y
-  gen-license
+  echo mit | gen-license
   gen-covgen
   gen-readme
   mkdir ".github"
   gen-contributing
+  git init
   gen-repo
   gitignore node
   git add -A
