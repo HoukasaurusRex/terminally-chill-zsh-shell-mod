@@ -79,6 +79,33 @@ function node-create           # Start new node project
   # TODO: ask to generate gh repo
 }
 
+function gen-lint           # Generates Eslint config
+{
+  local function help-message {
+    echo "\nAdd any linting files you would like to use as templates here"
+    echo "\nand run ${YELLOW}gen-lint${RESET} to copy them into your current"
+    echo "\nworking directory"
+  }
+  # TODO: specify custom plugins
+  local nodeModules=(eslint prettier eslint-config-prettier eslint-plugin-prettier husky lint-staged)
+  if hash yarn 2>/dev/null; then
+    yarn add --dev $nodeModules
+  else
+    npm install --only=dev $nodeModules
+  fi
+  if [ -d $HOME/.templates/lint ]; then
+    for file in $HOME/.templates/lint/.*; do
+      [ -r "$file" ] && cp $file .
+    done
+    unset file
+  else
+    echo "\nCreating ${PINK}lint${RESET} directory in $HOME/.templates"
+    [ -d $HOME/.templates ] || mkdir $HOME/.templates
+    mkdir $HOME/.templates/lint
+    help-message
+  fi
+}
+
 function global-install     # Handles global node modules
 {
   # TODO: add to 'global' function
