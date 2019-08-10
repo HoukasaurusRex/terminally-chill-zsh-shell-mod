@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if [ ! -d $HOME/.old_profile ]; then
   mkdir $HOME/.old_profile
 fi
@@ -7,7 +9,7 @@ echo 'Moving old scripts into ' ${YELLOW} $HOME/.old_profile ${RESET}
 echo '\n'
 
 for file in $HOME/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
-  cp $file $HOME/.old_profile
+  [ -r "$file" ] && cp $file $HOME/.old_profile
 done
 unset file
 
@@ -20,7 +22,7 @@ else
 fi
 
 for file in ./src/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
-  cp $file $HOME
+  [ -r "$file" ] && cp $file $HOME
 done
 unset file
 printf "$MAGENTA"

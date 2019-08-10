@@ -3,7 +3,7 @@
 ![Version](https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Pterobyte/bash/tree/master/LICENSE)
 <!-- [![David Dependencies Status](https://david-dm.org/pterobyte/bash.svg)](https://david-dm.org/pterobyte/bash) -->
-<!-- [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Pterobyte/bash.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Pterobyte/bash/context:javascript) -->
+<!-- [![Language grade: Shell](https://img.shields.io/lgtm/grade/shell/g/Pterobyte/bash.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Pterobyte/bash/context:shell) -->
 [![Twitter: CapnAwesome](https://img.shields.io/twitter/follow/CapnAwesome.svg?style=social)](https://twitter.com/CapnAwesome)
 
 ![terminally chill logo](assets/screenshots/terminally-chill.png)

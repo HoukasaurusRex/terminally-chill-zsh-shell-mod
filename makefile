@@ -1,7 +1,9 @@
 #!/usr/bin/make -f
 
-.PHONY: all
+.PHONY: install revert
 
-all:
-	chmod +x ./install.sh
+install:
 	./install.sh
+
+revert:
+	./revert.sh
