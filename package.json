@@ -16,5 +16,6 @@
   "bugs": {
     "url": "https://github.com/Pterobyte/bash/issues"
   },
-  "homepage": "https://github.com/Pterobyte/bash#readme"
+  "homepage": "https://github.com/Pterobyte/bash#readme",
+  "devDependencies": {}
 }

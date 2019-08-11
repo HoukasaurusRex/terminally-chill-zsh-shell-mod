@@ -81,43 +81,44 @@ function node-create           # Start new node project
 
 function gen-lint           # Generates Eslint config
 {
-  local function help-message {
-    echo "\nAdd any linting files you would like to use as templates here"
-    echo "\nand run ${YELLOW}gen-lint${RESET} to copy them into your current"
-    echo "\nworking directory"
-  }
+  local help_message=(
+    "\nAdd any linting files you would like to use as templates here"
+    "\nand run ${YELLOW}gen-lint${RESET} to copy them into your current"
+    "\nworking directory"
+  )
   # TODO: specify custom plugins
-  local nodeModules=(eslint prettier eslint-config-prettier eslint-plugin-prettier husky lint-staged)
+  local node_modules=(eslint prettier eslint-config-prettier eslint-plugin-prettier husky lint-staged)
   if hash yarn 2>/dev/null; then
-    yarn add --dev $nodeModules
+    yarn add --dev $node_modules
   else
-    npm install --only=dev $nodeModules
+    npm install --only=dev $node_modules
   fi
+  # TODO: custom lint directory
   if [ -d $HOME/.templates/lint ]; then
     for file in $HOME/.templates/lint/.*; do
+      # TODO: filter unwanted files (.git, .DS_Store, etc)
       [ -r "$file" ] && cp $file .
     done
     unset file
   else
-    echo "\nCreating ${PINK}lint${RESET} directory in $HOME/.templates"
+    echo "\nCreating ${PINK}lint${RESET} directory in ${PINK}$HOME/.templates${RESET}"
     [ -d $HOME/.templates ] || mkdir $HOME/.templates
     mkdir $HOME/.templates/lint
-    help-message
+    echo $help_message
   fi
 }
 
 function global-install     # Handles global node modules
 {
   # TODO: add to 'global' function
-  local nodeModules=(generate-contributing generate-gh-repo generate-license yarn npm)
+  local node_modules=(generate-contributing generate-gh-repo generate-license yarn npm)
   if [ $1 ] && [ $1 == 'yarn' ]; then
-    echo "${YELLOW} yarn ${RESET} add -g ${PINK} $nodeModules ${RESET}"
-    yarn add -g $nodeModules
+    echo "${YELLOW} yarn ${RESET} add -g ${PINK} $node_modules ${RESET}"
+    yarn add -g $node_modules
   else
-    echo "${YELLOW} npm ${RESET} install -g ${PINK} $nodeModules ${RESET}"
-    npm install -g $nodeModules
+    echo "${YELLOW} npm ${RESET} install -g ${PINK} $node_modules ${RESET}"
+    npm install -g $node_modules
   fi
-    
 }
 
 function listening          # Check Ports
