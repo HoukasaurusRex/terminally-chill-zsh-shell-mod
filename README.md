@@ -1,4 +1,4 @@
-# Welcome to the TerminallyChill Bash Setup 👋
+# TerminallyChill's Super Bash Setup
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Pterobyte/bash/tree/master/LICENSE)
@@ -9,14 +9,14 @@
 ![terminally chill logo](assets/screenshots/terminally-chill.png)
 ![functions and aliases](assets/screenshots/functions-and-aliases.png)
 
-> Custom bash_profile and shell functions
+> Custom bash profile and shell functions
 
 ### 🏠 [Homepage](https://pterobyte.github.io/bash)
 
 ## Install
 
 ```sh
-make all
+make install
 ```
 
 ## Author
@@ -48,7 +48,7 @@ This project is [MIT](https://github.com/Pterobyte/bash/tree/master/LICENSE) lic
 
 ### ☑️TODO
 
-- [ ] Move scripts into custom dotfiles and just source them in .zshrc
-- [ ] allow cherry picking
-- [ ] Upgrade from git
-- [ ] Print help a little cleaner
+* [ ] Move scripts into custom dotfiles and just source them in .zshrc
+* [ ] allow cherry picking
+* [ ] Upgrade from git
+* [ ] Print help a little cleaner
