@@ -45,6 +45,8 @@ function node-create           # Start new node project
       mkdir $2
     elif [ $1 == 'express' ]; then
       npx express-generator $2 --no-view --es6
+    elif [ $1 == 'feathers' ]; then
+      npx feathers generate $2
     elif [ $1 == 'vue' ]; then
       npx @vue/cli create $2
     elif [ $1 == 'quasar' ]; then
@@ -87,7 +89,15 @@ function gen-lint           # Generates Eslint config
     "\nworking directory"
   )
   # TODO: specify custom plugins
-  local node_modules=(eslint prettier eslint-config-prettier eslint-plugin-prettier husky lint-staged)
+  local node_modules=(
+    eslint
+    prettier
+    eslint-config-prettier
+    eslint-plugin-prettier
+    stylelint
+    husky
+    lint-staged
+  )
   if hash yarn 2>/dev/null; then
     yarn add --dev $node_modules
   else
@@ -111,7 +121,8 @@ function gen-lint           # Generates Eslint config
 function global-install     # Handles global node modules
 {
   # TODO: add to 'global' function
-  local node_modules=(generate-contributing generate-gh-repo generate-license yarn npm)
+  # TODO generate custom list of global modules
+  local node_modules=(mocha generate-contributing generate-gh-repo generate-license @cloudflare/wrangler yarn npm)
   if [ $1 ] && [ $1 == 'yarn' ]; then
     echo "${YELLOW} yarn ${RESET} add -g ${PINK} $node_modules ${RESET}"
     yarn add -g $node_modules
