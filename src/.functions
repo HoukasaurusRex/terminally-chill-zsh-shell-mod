@@ -46,7 +46,7 @@ function node-create           # Start new node project
     elif [ $1 == 'express' ]; then
       npx express-generator $2 --no-view --es6
     elif [ $1 == 'feathers' ]; then
-      npx feathers generate $2
+      npx @feathersjs/cli generate app
     elif [ $1 == 'vue' ]; then
       npx @vue/cli create $2
     elif [ $1 == 'quasar' ]; then
