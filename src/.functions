@@ -28,7 +28,7 @@ function bash-mail            # Interacts with Bash Mail in /var/mail
     elif [ $1 == 'check' ]; then
       cat /var/mail/$USER
     elif [ $1 == 'clean' ]; then
-      sudo rm -i /var/mail/$USER
+      sudo rm /var/mail/$USER
     else
       echo $help
     fi
