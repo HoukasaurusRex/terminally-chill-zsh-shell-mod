@@ -81,6 +81,28 @@ function node-create           # Start new node project
   # TODO: ask to generate gh repo
 }
 
+function github-create
+{
+  local repo_name="$1"
+  local help="Usage: github-create ${YELLOW}[ repo-name ] ${RESET}"
+  if [ -z "$repo_name" ]; then
+    echo $help
+    return
+  fi
+  read "otp?Enter your 2FA code: "
+  local res=$(curl -u $GITHUB_USER https://api.github.com/user/repos -d "{\"name\":\"$repo_name\"}" --header "x-github-otp: $otp")
+  local created=$(print $res | python -mjson.tool | grep created_at)
+  if [ -z "$created" ]; then
+    local message=$(printf $res | python -mjson.tool | grep message)
+    echo "${RED}Error:${RESET} $message"
+    return
+  fi
+  read "yn?Do you want to add this repo to your github remote? "
+  if [ $yn == [Yy]* ]; then
+    git remote add origin git@github.com:$GITHUB_USER/$repo_name.git
+  fi
+}
+
 function gen-lint           # Generates Eslint config
 {
   local help_message=(
