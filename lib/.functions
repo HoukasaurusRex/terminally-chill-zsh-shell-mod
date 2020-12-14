@@ -1,0 +1,249 @@
+function help               # Show a list of functions
+{
+  echo "\n"
+  echo ${BOLD} 'FUNCTIONS ===============================>'
+  echo ${RESET}
+  grep "^function" $HOME/.functions
+  echo ${RESET}
+  echo ${BOLD} 'ALIASES   ===============================>'
+  echo ${RESET}
+  grep "^alias" $HOME/.aliases
+}
+
+function gitignore          # Generate gitignore
+{
+  npx gitignore $1
+}
+
+function bash-mail          # Interacts with Bash Mail in /var/mail
+{
+  local help="Usage: bash-mail ${YELLOW}[ open | check | clean ] ${RESET}"
+  if [ $1 ]; then
+    if [ $1 == 'open' ]; then
+      code /var/mail/$USER
+    elif [ $1 == 'check' ]; then
+      cat /var/mail/$USER
+    elif [ $1 == 'clean' ]; then
+      sudo rm /var/mail/$USER
+    else
+      echo $help
+    fi
+  else
+    echo $help
+  fi
+}
+
+function node-create        # Start new node project
+{
+  local help="Usage: node-create ${YELLOW}[ basic | express | koa | strapi | cf-worker | vue | nuxt | quasar| react | next | gatsby ] ${PINK}[project-name] ${RESET}"
+  if [ $2 ]; then
+    if [ $1 == 'basic' ]; then
+      mkdir $2 && cd $2 && npm init
+    elif [ $1 == 'express' ]; then
+      npx express-generator $2 --no-view --es6 && cd $2
+    elif [ $1 == 'feathers' ]; then
+      npx @feathersjs/cli generate app && cd $2
+    elif [ $1 == 'vue' ]; then
+      npx @vue/cli create $2 && cd $2
+    elif [ $1 == 'quasar' ]; then
+      npx @quasar/cli create $2 && cd $2
+    elif [ $1 == 'react' ]; then
+      yarn create react-app $2 && cd $2
+    elif [ $1 == 'koa' ]; then
+      npx koa-generator $2 --hbs --css scss && cd $2
+    elif [ $1 == 'nuxt' ]; then
+      yarn create nuxt-app $2 && cd $2
+    elif [ $1 == 'next' ]; then
+      yarn create next-app $2 && cd $2
+    elif [ $1 == 'gatsby' ]; then
+      npm init gatsby $2 && cd $2
+    elif [ $1 == 'strapi' ]; then
+      yarn create strapi-app $2 --quickstart && cd $2
+    elif [ $1 == 'cf-worker' ]; then
+      npx @cloudflare/wrangler init --type=webpack && cd $2
+    else
+      echo $help
+      return
+    fi
+  else
+    echo $help
+    return
+  fi
+  cd $2
+  npm init -y
+  gitignore node
+  git init
+  read "yn?Do you want to create a README? "
+  if [ $yn == [Yy]* ]; then
+    gen readme
+  fi
+  read "yn?Do you want to create a LICENSE? "
+  if [ $yn == [Yy]* ]; then
+    gen license
+  fi
+  read "yn?Do you want to create a CODE_OF_CONDUCT? "
+  if [ $yn == [Yy]* ]; then
+    gen covgen
+  fi
+  read "yn?Do you want to create contributing templates? "
+  if [ $yn == [Yy]* ]; then
+    gen contributing
+  fi
+  git add -A
+  git commit -m 'initialized node project'
+  code .
+}
+
+
+function listening          # Check Ports
+{
+  if [ $# -eq 0 ]; then
+    sudo lsof -iTCP -sTCP:LISTEN -n -P
+  elif [ $# -eq 1 ]; then
+    sudo lsof -iTCP -sTCP:LISTEN -n -P | grep -i --color $1
+  else
+    echo 'Usage: listening [pattern]'
+  fi
+}
+
+function damn               # Reinstall node_modules
+{
+  # TODO: remove globals option
+  if [ $1 ]; then
+    if [ $1 == 'yarn' ]; then
+      rm -rf node_modules
+      yarn install
+    elif [ $1 == 'npm' ]; then
+      rm -rf node_modules
+      npm install
+    else
+      echo "Usage: damn [${YELLOW} yarn ${RESET} | ${YELLOW} npm ${RESET}]"
+    fi
+  else
+    if [ command -v yarn ]; then
+      rm -rf node_modules
+      yarn install
+    else
+      rm -rf node_modules
+      npm install
+    fi
+  fi
+}
+
+function untrack            # Fix untracked files in git
+{
+  git rm -r --cached .
+  git add .
+  git commit -m 'fixed untracked files'
+}
+
+function sites              # cd to Sites directory
+{
+  # TODO: turn var into flag, add var for other project dirs
+  if [ $1 ]; then
+    cd $HOME/$1/Sites
+  else
+    cd $HOME/Sites
+  fi
+}
+
+function global             # List or install global dependencies
+{
+  local help_message="Usage: global list/install [${YELLOW} yarn ${RESET} | ${YELLOW} npm ${RESET}]"
+  if [ $2 ]; then
+    if [ $2 == 'yarn' ]; then
+      if [ $1 == 'list' ]; then
+        yarn global list --depth=0
+      elif [ $1 == 'install' ]; then
+        echo "${YELLOW} yarn ${RESET} add -g ${PINK} $GLOBAL_NODE_MODULES ${RESET}"
+        yarn add -g $GLOBAL_NODE_MODULES
+      else
+        echo $help_message
+      fi
+    elif [ $2 == 'npm' ]; then
+      if [ $1 == 'list' ]; then
+        npm list -g --depth=0
+      elif [ $1 == 'install' ]; then
+        echo "${YELLOW} npm ${RESET} install -g ${PINK} $GLOBAL_NODE_MODULES ${RESET}"
+        npm install -g $GLOBAL_NODE_MODULES
+      else
+        echo $help_message
+      fi
+    else
+      echo $help_message
+    fi
+  else
+    echo $help_message
+  fi
+}
+
+function fromhex            # Converts hexadecimal color code to tput color index
+{
+  # TODO: add help
+    hex=${1#"#"}
+    r=$(printf '0x%0.2s' "$hex")
+    g=$(printf '0x%0.2s' ${hex#??})
+    b=$(printf '0x%0.2s' ${hex#????})
+    printf '%03d' "$(( (r<75?0:(r-35)/40)*6*6 + 
+                       (g<75?0:(g-35)/40)*6   +
+                       (b<75?0:(b-35)/40)     + 16 ))"
+}
+
+function printenv-heroku    # Download environment variables from Heroku
+{
+  heroku config -s > .env
+}
+
+function upgrade            # Upgrades shell profiles to latest release
+{
+  if [ -f .oh-my-zsh/tools/upgrade.sh ]; then
+    sh .oh-my-zsh/tools/upgrade.sh
+  fi
+}
+
+function mkcd               # Make directory and immediately cd into it
+{
+  if [ ! -n "$1" ]; then
+    echo "Usage: mkcd [directory-name]"
+  elif [ -d $1 ]; then
+    echo "\`$1' already exists"
+  else
+    mkdir $1 && cd $1
+  fi
+}
+
+function gen                # Generate generic project boilerplate files for new projects
+{
+  local help_message="Usage: gen [${YELLOW} readme ${RESET} | ${YELLOW} license ${RESET} | ${YELLOW} covgen ${RESET} | ${YELLOW} contributing ${RESET} | ${YELLOW} repo ${RESET} | ${YELLOW} lint ${RESET}]"
+  if [ $1 ]; then
+    if [ $1 == 'readme' ]; then
+      local readme_url="https://gist.githubusercontent.com/HoukasaurusRex/1e3a9fddf21b84296dca2ba0b5bc5e7f/raw/89bad6a6a6e09619ed1daa81e8aaa72f66ad6958/README.md"
+      curl $readme_url > README.md
+    elif [ $1 == 'license' ]; then
+      npx license
+    elif [ $1 == 'covgen' ]; then
+      npx covgen $(npm get init-author-email)
+    elif [ $1 == 'contributing' ]; then
+      mkdir -p .github
+      npx -p generate-contributing gen contributing contributing:it contributing:pr --dest .github
+    elif [ $1 == 'repo' ]; then
+      git init
+      read "yn?Do you want to create a new repo on Github? "
+      if [ $yn == [Yy]* ]; then
+        gh repo create
+      fi
+    elif [ $1 == 'lint' ]; then
+      yarn add -D prettier eslint eslint-config-akkadu
+      echo '{\n  "extends": ["eslint-config-akkadu"]\n}' > .eslintrc
+    else
+      echo $help_message
+    fi
+  else
+    echo $help_message
+  fi
+}
+
+function show-hidden-files  # Show hidden files in Finder
+{
+  defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app
+}

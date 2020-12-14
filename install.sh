@@ -1,27 +1,28 @@
 #!/bin/sh
 
-if [ ! -d $HOME/.old_profile ]; then
-  mkdir $HOME/.old_profile
+if [ ! -d $HOME/.backup_profiles ]; then
+  mkdir $HOME/.backup_profiles
 fi
+currentDate=`date +%Y-%m-%d--%H-%M-%S`
+
+mkdir $HOME/.backup_profiles/$currentDate
 
 echo '\n'
-echo 'Moving old scripts into ' ${YELLOW} $HOME/.old_profile ${RESET}
+echo 'Moving old scripts into ' ${YELLOW} $HOME/.backup_profiles/$currentDate ${RESET}
 echo '\n'
 
 for file in $HOME/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
-  [ -r "$file" ] && cp $file $HOME/.old_profile
+  [ -r "$file" ] && cp $file $HOME/.backup_profiles/$currentDate
 done
 unset file
 
 if [ ! -d $HOME/.oh-my-zsh ]; then
   sh oh-my-zsh/tools/install.sh
-  echo 'install'
 else
   sh oh-my-zsh/tools/upgrade.sh
-  echo 'upgrade'
 fi
 
-for file in ./src/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
+for file in ./lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
   [ -r "$file" ] && cp $file $HOME
 done
 unset file
@@ -37,7 +38,7 @@ printf "$MAGENTA"
    |::.|                                                |::.. . |               
    `---'                                                `-------'               
                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                      
+  If you're happy with this shell profile mod (or not), let me hear it on Twitter @HoukasaurusRex (https://twitter.com/HoukasaurusRex)                                                                                                                                                                                                                         
 EOF
 printf "$RESET"
 
