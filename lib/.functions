@@ -1,4 +1,4 @@
-function help               # Show a list of functions
+function tch                # Show a list of functions
 {
   echo "\n"
   echo ${BOLD} 'FUNCTIONS ===============================>'
