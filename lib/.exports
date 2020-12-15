@@ -3,4 +3,4 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export ZSH="$HOME/.oh-my-zsh"
 export EDITOR="nano"
-export GLOBAL_NODE_MODULES=(yarn npm generator)
+export GLOBAL_NODE_MODULES=(yarn npm generate)

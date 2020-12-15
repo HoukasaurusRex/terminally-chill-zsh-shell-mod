@@ -75,22 +75,22 @@ function node-create        # Start new node project
   git init
   read "yn?Do you want to create a README? (y/n)"
   if [[ $yn == [Yy]* ]]; then
-    gen readme
+    node-gen readme
   fi
   yn=""
   read "yn?Do you want to create a LICENSE? (y/n)"
   if [[ $yn == [Yy]* ]]; then
-    gen license
+    node-gen license
   fi
   yn=""
   read "yn?Do you want to create a CODE_OF_CONDUCT? (y/n)"
   if [[ $yn == [Yy]* ]]; then
-    gen covgen
+    node-gen covgen
   fi
   yn=""
   read "yn?Do you want to create contributing templates? (y/n)"
   if [[ $yn == [Yy]* ]]; then
-    gen contributing
+    node-gen contributing
   fi
   git add -A
   git commit -m 'initialized node project'
@@ -215,9 +215,9 @@ function mkcd               # Make directory and immediately cd into it
   fi
 }
 
-function gen                # Generate generic project boilerplate files for new projects
+function node-gen           # Generate generic project boilerplate files for new projects
 {
-  local help_message="Usage: gen [${YELLOW} readme ${RESET} | ${YELLOW} license ${RESET} | ${YELLOW} covgen ${RESET} | ${YELLOW} contributing ${RESET} | ${YELLOW} repo ${RESET} | ${YELLOW} lint ${RESET}]"
+  local help_message="Usage: node-gen [${YELLOW} readme ${RESET} | ${YELLOW} license ${RESET} | ${YELLOW} covgen ${RESET} | ${YELLOW} contributing ${RESET} | ${YELLOW} repo ${RESET} | ${YELLOW} lint ${RESET}]"
   if [ $1 ]; then
     if [ $1 == 'readme' ]; then
       local readme_url="https://gist.githubusercontent.com/HoukasaurusRex/1e3a9fddf21b84296dca2ba0b5bc5e7f/raw/89bad6a6a6e09619ed1daa81e8aaa72f66ad6958/README.md"
