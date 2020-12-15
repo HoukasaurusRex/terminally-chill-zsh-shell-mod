@@ -38,29 +38,29 @@ function node-create        # Start new node project
   local help="Usage: node-create ${YELLOW}[ basic | express | koa | strapi | cf-worker | vue | nuxt | quasar| react | next | gatsby ] ${PINK}[project-name] ${RESET}"
   if [ $2 ]; then
     if [ $1 == 'basic' ]; then
-      mkdir $2 && cd $2 && npm init
+      mkdir $2 && npm init
     elif [ $1 == 'express' ]; then
-      npx express-generator $2 --no-view --es6 && cd $2
+      npx express-generator $2 --no-view --es6
     elif [ $1 == 'feathers' ]; then
-      npx @feathersjs/cli generate app && cd $2
+      npx @feathersjs/cli generate app
     elif [ $1 == 'vue' ]; then
-      npx @vue/cli create $2 && cd $2
+      npx @vue/cli create $2
     elif [ $1 == 'quasar' ]; then
-      npx @quasar/cli create $2 && cd $2
+      npx @quasar/cli create $2
     elif [ $1 == 'react' ]; then
-      yarn create react-app $2 && cd $2
+      yarn create react-app $2
     elif [ $1 == 'koa' ]; then
-      npx koa-generator $2 --hbs --css scss && cd $2
+      npx koa-generator $2 --hbs --css scss
     elif [ $1 == 'nuxt' ]; then
-      yarn create nuxt-app $2 && cd $2
+      yarn create nuxt-app $2
     elif [ $1 == 'next' ]; then
-      yarn create next-app $2 && cd $2
+      yarn create next-app $2
     elif [ $1 == 'gatsby' ]; then
-      npm init gatsby $2 && cd $2
+      npm init gatsby $2
     elif [ $1 == 'strapi' ]; then
-      yarn create strapi-app $2 --quickstart && cd $2
+      yarn create strapi-app $2 --quickstart
     elif [ $1 == 'cf-worker' ]; then
-      npx @cloudflare/wrangler init --type=webpack && cd $2
+      npx @cloudflare/wrangler init --type=webpack
     else
       echo $help
       return
@@ -73,20 +73,23 @@ function node-create        # Start new node project
   npm init -y
   gitignore node
   git init
-  read "yn?Do you want to create a README? "
-  if [ $yn == [Yy]* ]; then
+  read "yn?Do you want to create a README? (y/n)"
+  if [[ $yn == [Yy]* ]]; then
     gen readme
   fi
-  read "yn?Do you want to create a LICENSE? "
-  if [ $yn == [Yy]* ]; then
+  yn=""
+  read "yn?Do you want to create a LICENSE? (y/n)"
+  if [[ $yn == [Yy]* ]]; then
     gen license
   fi
-  read "yn?Do you want to create a CODE_OF_CONDUCT? "
-  if [ $yn == [Yy]* ]; then
+  yn=""
+  read "yn?Do you want to create a CODE_OF_CONDUCT? (y/n)"
+  if [[ $yn == [Yy]* ]]; then
     gen covgen
   fi
-  read "yn?Do you want to create contributing templates? "
-  if [ $yn == [Yy]* ]; then
+  yn=""
+  read "yn?Do you want to create contributing templates? (y/n)"
+  if [[ $yn == [Yy]* ]]; then
     gen contributing
   fi
   git add -A
@@ -228,8 +231,8 @@ function gen                # Generate generic project boilerplate files for new
       npx -p generate-contributing gen contributing contributing:it contributing:pr --dest .github
     elif [ $1 == 'repo' ]; then
       git init
-      read "yn?Do you want to create a new repo on Github? "
-      if [ $yn == [Yy]* ]; then
+      read "yn?Do you want to create a new repo on Github? (y/n)"
+      if [[ $yn == [Yy]* ]]; then
         gh repo create
       fi
     elif [ $1 == 'lint' ]; then

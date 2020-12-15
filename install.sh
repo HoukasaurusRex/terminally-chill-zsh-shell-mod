@@ -16,11 +16,11 @@ for file in $HOME/.{aliases,bash_profile,bash_prompt,exports,extra,functions,pat
 done
 unset file
 
-if [ ! -d $HOME/.oh-my-zsh ]; then
-  sh oh-my-zsh/tools/install.sh
-else
-  sh oh-my-zsh/tools/upgrade.sh
-fi
+# if [ ! -d $HOME/.oh-my-zsh ]; then
+#   sh oh-my-zsh/tools/install.sh
+# else
+#   sh oh-my-zsh/tools/upgrade.sh
+# fi
 
 for file in ./lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
   [ -r "$file" ] && cp $file $HOME
@@ -29,7 +29,7 @@ unset file
 printf "$MAGENTA"
 	cat <<-'EOF'
   
-  Your terminal is now...                                                                                                                                                                                                                                    
+  Your shell is now...                                                                                                                                                                                                                                    
   _______                     __             __ __       _______ __    __ __ __ 
  |       .-----.----.--------|__.-----.---.-|  |  .--.--|   _   |  |--|__|  |  |
  |.|   | |  -__|   _|        |  |     |  _  |  |  |  |  |.  1___|     |  |  |  |
@@ -38,10 +38,12 @@ printf "$MAGENTA"
    |::.|                                                |::.. . |               
    `---'                                                `-------'               
                                                                                                                                                                                                                                                    
-  If you're happy with this shell profile mod (or not), let me hear it on Twitter @HoukasaurusRex (https://twitter.com/HoukasaurusRex)                                                                                                                                                                                                                         
+  
 EOF
 printf "$RESET"
 
-echo 'Run ' ${YELLOW} '[help] ' ${RESET} 'for details on custom functions'
+printf "If you're happy with this shell profile mod (or not), let me hear it on Twitter @HoukasaurusRex (https://twitter.com/HoukasaurusRex)\n\n"
+
+echo 'Run ' ${YELLOW} '[help] ' ${RESET} 'for details on custom functions and aliases'
 
 exec zsh -l
