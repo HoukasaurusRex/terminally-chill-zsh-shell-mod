@@ -35,10 +35,10 @@ function bash-mail          # Interacts with Bash Mail in /var/mail
 
 function node-create        # Start new node project
 {
-  local help="Usage: node-create ${YELLOW}[ basic | express | koa | strapi | cf-worker | vue | nuxt | quasar| react | next | gatsby ] ${PINK}[project-name] ${RESET}"
+  local help="Usage: node-create ${YELLOW}[ no-framework | express | koa | strapi | cf-worker | vue | nuxt | quasar| react | next | gatsby ] ${PINK}[project-name] ${RESET}"
   if [ $2 ]; then
-    if [ $1 == 'basic' ]; then
-      mkdir $2 && npm init
+    if [ $1 == 'no-framework' ]; then
+      mkdir $2
     elif [ $1 == 'express' ]; then
       npx express-generator $2 --no-view --es6
     elif [ $1 == 'feathers' ]; then
@@ -56,7 +56,7 @@ function node-create        # Start new node project
     elif [ $1 == 'next' ]; then
       yarn create next-app $2
     elif [ $1 == 'gatsby' ]; then
-      npm init gatsby $2
+      npx gatsby new $2
     elif [ $1 == 'strapi' ]; then
       yarn create strapi-app $2 --quickstart
     elif [ $1 == 'cf-worker' ]; then
@@ -71,8 +71,6 @@ function node-create        # Start new node project
   fi
   cd $2
   npm init -y
-  gitignore node
-  git init
   read "yn?Do you want to create a README? (y/n)"
   if [[ $yn == [Yy]* ]]; then
     node-gen readme
@@ -92,8 +90,15 @@ function node-create        # Start new node project
   if [[ $yn == [Yy]* ]]; then
     node-gen contributing
   fi
-  git add -A
-  git commit -m 'initialized node project'
+  yn=""
+  read "yn?Do you want to initialize a new git repository? (y/n)"
+  if [[ $yn == [Yy]* ]]; then
+    gitignore node
+    noge-gen repo
+    git add -A
+    git commit -m 'commit template built with tch node-create'
+    git push -u origin master
+  fi
   code .
 }
 
@@ -220,7 +225,7 @@ function node-gen           # Generate generic project boilerplate files for new
   local help_message="Usage: node-gen [${YELLOW} readme ${RESET} | ${YELLOW} license ${RESET} | ${YELLOW} covgen ${RESET} | ${YELLOW} contributing ${RESET} | ${YELLOW} repo ${RESET} | ${YELLOW} lint ${RESET}]"
   if [ $1 ]; then
     if [ $1 == 'readme' ]; then
-      local readme_url="https://gist.githubusercontent.com/HoukasaurusRex/1e3a9fddf21b84296dca2ba0b5bc5e7f/raw/89bad6a6a6e09619ed1daa81e8aaa72f66ad6958/README.md"
+      local readme_url="https://raw.githubusercontent.com/HoukasaurusRex/pretty-good-readme/master/README.md"
       curl $readme_url > README.md
     elif [ $1 == 'license' ]; then
       npx license
