@@ -16,11 +16,11 @@ for file in $HOME/.{aliases,bash_profile,bash_prompt,exports,extra,functions,pat
 done
 unset file
 
-# if [ ! -d $HOME/.oh-my-zsh ]; then
-#   sh oh-my-zsh/tools/install.sh
-# else
-#   sh oh-my-zsh/tools/upgrade.sh
-# fi
+if [ ! -d $HOME/.oh-my-zsh ]; then
+  sh oh-my-zsh/tools/install.sh
+else
+  sh oh-my-zsh/tools/upgrade.sh
+fi
 
 for file in ./lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
   [ -r "$file" ] && cp $file $HOME
