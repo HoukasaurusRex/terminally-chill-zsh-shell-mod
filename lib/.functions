@@ -35,7 +35,7 @@ function bash-mail          # Interacts with Bash Mail in /var/mail
 
 function node-create        # Start new node project
 {
-  local help="Usage: node-create ${YELLOW}[ no-framework | express | koa | strapi | cf-worker | vue | nuxt | quasar| react | next | gatsby ] ${PINK}[project-name] ${RESET}"
+  local help="Usage: node-create ${YELLOW}[ no-framework | express | koa | strapi | cf-worker | lambda | vue | nuxt | quasar| react | next | gatsby ] ${PINK}[project-name] ${RESET}"
   if [ $2 ]; then
     if [ $1 == 'no-framework' ]; then
       mkdir $2
@@ -61,6 +61,8 @@ function node-create        # Start new node project
       yarn create strapi-app $2 --quickstart
     elif [ $1 == 'cf-worker' ]; then
       npx @cloudflare/wrangler init --type=webpack
+    elif [ $1 == 'lambda' ]; then
+      npx serverless create --template aws-nodejs --path $2
     else
       echo $help
       return
@@ -94,9 +96,10 @@ function node-create        # Start new node project
   read "yn?Do you want to initialize a new git repository? (y/n)"
   if [[ $yn == [Yy]* ]]; then
     gitignore node
-    noge-gen repo
+    git init
     git add -A
     git commit -m 'commit template built with tch node-create'
+    node-gen repo
     git push -u origin master
   fi
   code .
