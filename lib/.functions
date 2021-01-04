@@ -60,7 +60,7 @@ function node-create        # Start new node project
     elif [ $1 == 'strapi' ]; then
       yarn create strapi-app $2 --quickstart
     elif [ $1 == 'cf-worker' ]; then
-      mkdir $2
+      mkls $2
       npx @cloudflare/wrangler init --type=webpack
     elif [ $1 == 'lambda' ]; then
       npx serverless create --template aws-nodejs --path $2
