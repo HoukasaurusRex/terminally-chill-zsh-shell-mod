@@ -60,7 +60,7 @@ function node-create        # Start new node project
     elif [ $1 == 'strapi' ]; then
       yarn create strapi-app $2 --quickstart
     elif [ $1 == 'cf-worker' ]; then
-      mkls $2
+      mkcd $2
       npx @cloudflare/wrangler init --type=webpack
     elif [ $1 == 'lambda' ]; then
       npx serverless create --template aws-nodejs --path $2
@@ -72,7 +72,7 @@ function node-create        # Start new node project
     echo $help
     return
   fi
-  cd $2
+  [[ -d $2 ]] && cd $2
   npm init -y
   read "yn?Do you want to create a README? (y/n)"
   if [[ $yn == [Yy]* ]]; then
