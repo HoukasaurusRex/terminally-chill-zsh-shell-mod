@@ -2,22 +2,24 @@
 
 project_root="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # https://stackoverflow.com/a/4774063/8210954
 
-if [ ! -d $TSH ]; then
-  mkdir $TSH
+TSH_DIR="$HOME/.terminally-chill-shell"
+
+if [ ! -d $TSH_DIR ]; then
+  mkdir $TSH_DIR
 fi
-if [ ! -d $TSH/.backup_profiles ]; then
-  mkdir $TSH/.backup_profiles
+if [ ! -d $TSH_DIR/.backup_profiles ]; then
+  mkdir $TSH_DIR/.backup_profiles
 fi
 currentDate=`date +%Y-%m-%d--%H-%M-%S`
 
-mkdir $TSH/.backup_profiles/$currentDate
+mkdir $TSH_DIR/.backup_profiles/$currentDate
 
 echo '\n'
-echo 'Moving old scripts into ' ${YELLOW} $TSH/.backup_profiles/$currentDate ${RESET}
+echo 'Moving old scripts into ' ${YELLOW} $TSH_DIR/.backup_profiles/$currentDate ${RESET}
 echo '\n'
 
-for file in $TSH/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
-  [ -r "$file" ] && cp $file $TSH/.backup_profiles/$currentDate
+for file in $TSH_DIR/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
+  [ -r "$file" ] && cp $file $TSH_DIR/.backup_profiles/$currentDate
 done
 unset file
 
@@ -26,7 +28,7 @@ if [ ! -d $HOME/.oh-my-zsh ]; then
 fi
 
 for file in $project_root/lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
-  [ -r "$file" ] && cp $file $TSH
+  [ -r "$file" ] && cp $file $TSH_DIR
 done
 unset file
 printf "$MAGENTA"
