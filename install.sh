@@ -49,6 +49,6 @@ printf "$RESET"
 
 printf "If you're happy with this shell profile mod (or not), let me hear it on Twitter @HoukasaurusRex (https://twitter.com/HoukasaurusRex)\n\n"
 
-echo 'Run ' ${YELLOW} '[help] ' ${RESET} 'for details on custom functions and aliases'
+echo 'Run ' ${YELLOW} '[tch] ' ${RESET} 'for details on custom functions and aliases'
 
 exec zsh -l
