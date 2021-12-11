@@ -3,6 +3,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export ZSH="$HOME/.oh-my-zsh"
 export EDITOR="nano"
-export GLOBAL_NODE_MODULES=(yarn npm generate)
+export GLOBAL_NODE_MODULES=(npm generate)
 export TSH_DIR="$HOME/.terminally-chill-shell"
 export AWS_PROFILE="jt"
