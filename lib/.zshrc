@@ -1,7 +1,7 @@
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
-for file in $TSH/.{path,aliases,bash_profile,bash_prompt,exports,functions,extra}; do
+for file in $HOME/.{path,aliases,bash_profile,bash_prompt,exports,functions,extra}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
@@ -68,7 +68,7 @@ plugins=(
   # jsontools
   # macports
   node
-  osx
+  macos
   sudo
   # thor
   docker
