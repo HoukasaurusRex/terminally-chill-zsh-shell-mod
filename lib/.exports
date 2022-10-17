@@ -5,4 +5,3 @@ export ZSH="$HOME/.oh-my-zsh"
 export EDITOR="nano"
 export GLOBAL_NODE_MODULES=(npm generate)
 export TSH_DIR="$HOME/.terminally-chill-shell"
-export AWS_PROFILE="jt"
