@@ -6,7 +6,9 @@ export TSH_DIR="$HOME/.terminally-chill-shell"
 # Lazy-load nvm: only sources nvm on first use of nvm/node/npm/npx
 _load_nvm() {
   unset -f nvm node npm npx
+  # shellcheck disable=SC1091
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  # shellcheck disable=SC1091
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 }
 nvm() { _load_nvm; nvm "$@"; }

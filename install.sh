@@ -1,6 +1,6 @@
 #!/bin/sh
 
-project_root="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )" # https://stackoverflow.com/a/4774063/8210954
+project_root="$( cd "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
 
 if [ ! -d "$HOME/.backup_profiles" ]; then
   mkdir "$HOME/.backup_profiles"
@@ -9,9 +9,9 @@ currentDate=$(date +%Y-%m-%d--%H-%M-%S)
 
 mkdir "$HOME/.backup_profiles/$currentDate"
 
-echo '\n'
-echo 'Moving old profile into ' ${YELLOW} "$HOME/.backup_profiles/$currentDate" ${RESET}
-echo '\n'
+printf '\n'
+printf 'Moving old profile into %s %s %s\n' "${YELLOW}" "$HOME/.backup_profiles/$currentDate" "${RESET}"
+printf '\n'
 
 for file in "$HOME"/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
   [ -r "$file" ] && cp "$file" "$HOME/.backup_profiles/$currentDate"
@@ -26,7 +26,7 @@ for file in "$project_root"/lib/.{aliases,bash_profile,bash_prompt,exports,extra
   [ -r "$file" ] && cp "$file" "$HOME"
 done
 unset file
-printf "$MAGENTA"
+printf '%s' "$MAGENTA"
 	cat <<-'EOF'
   
   Your shell is now...                                                                                                                                                                                                                                    
@@ -40,10 +40,10 @@ printf "$MAGENTA"
                                                                                                                                                                                                                                                    
   
 EOF
-printf "$RESET"
+printf '%s' "$RESET"
 
 printf "If you're happy with this shell profile mod (or not), let me hear it on Twitter @HoukasaurusRex (https://twitter.com/HoukasaurusRex)\n\n"
 
-echo 'Run ' ${YELLOW} '[tch] ' ${RESET} 'for details on custom functions and aliases'
+printf 'Run %s [tch] %s for details on custom functions and aliases\n' "${YELLOW}" "${RESET}"
 
 exec zsh -l

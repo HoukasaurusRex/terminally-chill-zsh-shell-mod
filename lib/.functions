@@ -1,12 +1,12 @@
 function tch                # Show a list of functions
 {
-  echo "\n"
-  echo ${BOLD} 'FUNCTIONS ===============================>'
-  echo ${RESET}
+  printf '\n'
+  echo "${BOLD}" 'FUNCTIONS ===============================>'
+  echo "${RESET}"
   grep "^function" "$HOME/.functions"
-  echo ${RESET}
-  echo ${BOLD} 'ALIASES   ===============================>'
-  echo ${RESET}
+  echo "${RESET}"
+  echo "${BOLD}" 'ALIASES   ===============================>'
+  echo "${RESET}"
   grep "^alias" "$HOME/.aliases"
 }
 
@@ -60,8 +60,8 @@ function fromhex            # Converts hexadecimal color code to tput color inde
 {
     hex=${1#"#"}
     r=$(printf '0x%0.2s' "$hex")
-    g=$(printf '0x%0.2s' ${hex#??})
-    b=$(printf '0x%0.2s' ${hex#????})
+    g=$(printf '0x%0.2s' "${hex#??}")
+    b=$(printf '0x%0.2s' "${hex#????}")
     printf '%03d' "$(( (r<75?0:(r-35)/40)*6*6 +
                        (g<75?0:(g-35)/40)*6   +
                        (b<75?0:(b-35)/40)     + 16 ))"
@@ -83,7 +83,7 @@ function mkcd               # Make directory and immediately cd into it
   elif [ -d "$1" ]; then
     echo "\`$1' already exists"
   else
-    mkdir "$1" && cd "$1"
+    mkdir "$1" && cd "$1" || return
   fi
 }
 

@@ -1,2 +1,2 @@
-GITHUB_USER='HoukasaurusRex'
+export GITHUB_USER='HoukasaurusRex'
 
