@@ -1,0 +1,19 @@
+name: ShellCheck
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+      - name: Lint shell scripts
+        run: |
+          shellcheck -s bash install.sh revert.sh
+          shellcheck -s bash lib/.aliases lib/.bash_profile lib/.bash_prompt lib/.exports lib/.extra lib/.functions lib/.path

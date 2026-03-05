@@ -2,11 +2,8 @@
 PATH="/usr/bin:$PATH"
 PATH="/usr/local/share/python:$PATH"
 PATH="/usr/local/share/npm/bin:$PATH"
-PATH="/usr/local/bin:$(getconf PATH)"
+PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 PATH="/usr/local/bin:$PATH"
 PATH="/usr/local/sbin:$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
-PATH="$HOME/.pyenv/bin:$PATH"
 export PATH
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"

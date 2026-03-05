@@ -33,10 +33,12 @@ If you spend a lot of time in your terminal trying to get the most out of your s
 ### Built With
 
 * [ZSH](http://zsh.sourceforge.net/Doc/)
+* [Oh My ZSH](https://ohmyz.sh/)
+* [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
 
 ## ☕️ Getting Started
 
-To get it running locally, install dependencies with yarn and run the commands
+To get it running locally, just run the install command
 
 ### Prerequisites
 
