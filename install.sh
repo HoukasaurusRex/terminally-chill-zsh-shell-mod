@@ -22,6 +22,12 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
   sh oh-my-zsh/tools/install.sh
 fi
 
+# Install Powerlevel10k theme if not present
+P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+if [ ! -d "$P10K_DIR" ]; then
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
+fi
+
 for file in "$project_root"/lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
   [ -r "$file" ] && cp "$file" "$HOME"
 done
