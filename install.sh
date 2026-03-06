@@ -2,6 +2,14 @@
 
 project_root="$( cd "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
 
+# Install Homebrew if missing
+if ! command -v brew >/dev/null 2>&1; then
+  printf "Installing Homebrew...\n"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # shellcheck disable=SC2312
+  eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv 2>/dev/null)"
+fi
+
 if [ ! -d "$HOME/.backup_profiles" ]; then
   mkdir "$HOME/.backup_profiles"
 fi
@@ -42,6 +50,26 @@ fi
 # Install zsh-syntax-highlighting plugin if not present
 if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+fi
+
+# Install Crush CLI if not present
+if ! command -v crush >/dev/null 2>&1; then
+  brew install charmbracelet/tap/crush
+fi
+
+# Install default Node LTS via nvm if no default is set
+export NVM_DIR="$HOME/.nvm"
+# shellcheck disable=SC1091
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+if ! nvm ls default >/dev/null 2>&1; then
+  printf "Installing Node LTS via nvm...\n"
+  nvm install --lts
+  nvm alias default 'lts/*'
+fi
+
+# Enable yarn via corepack (ships with Node 16+)
+if ! command -v yarn >/dev/null 2>&1; then
+  corepack enable
 fi
 
 for file in "$project_root"/lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do

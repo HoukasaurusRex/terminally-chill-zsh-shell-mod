@@ -41,8 +41,7 @@ A curated ZSH configuration that gives you a productive shell out of the box. It
 ### Prerequisites
 
 * A unix-based system (tested on macOS and Linux)
-* [git](https://git-scm.com/) (for cloning dependencies during install)
-* [nvm](https://github.com/nvm-sh/nvm) (recommended for Node.js version management)
+* [nvm](https://github.com/nvm-sh/nvm) (for Node.js version management)
 
 ### Installation
 
@@ -53,10 +52,11 @@ make install
 This will:
 
 1. Back up your existing dotfiles to `~/.backup_profiles/<timestamp>/`
-2. Install [Oh My ZSH](https://ohmyz.sh/) if not already present
-3. Install [Powerlevel10k](https://github.com/romkatv/powerlevel10k), [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions), and [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) if not already present
-4. Copy the config files from `lib/` to your home directory
-5. Launch a new ZSH session
+2. Install [Homebrew](https://brew.sh/) if not already present
+3. Install [Oh My ZSH](https://ohmyz.sh/), [Powerlevel10k](https://github.com/romkatv/powerlevel10k), [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions), and [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
+4. Install [Crush](https://github.com/charmbracelet/crush) (AI coding assistant), Node LTS via nvm, and [Yarn](https://yarnpkg.com/) via corepack
+5. Copy the config files from `lib/` to your home directory
+6. Launch a new ZSH session
 
 ### Development Setup
 

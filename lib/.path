@@ -1,9 +1,10 @@
 
-PATH="/usr/bin:$PATH"
+# Homebrew (Apple Silicon, then Intel fallback)
+PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+
+PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 PATH="/usr/local/share/python:$PATH"
 PATH="/usr/local/share/npm/bin:$PATH"
-PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-PATH="/usr/local/bin:$PATH"
-PATH="/usr/local/sbin:$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
 export PATH
