@@ -87,6 +87,25 @@ function mkcd               # Make directory and immediately cd into it
   fi
 }
 
+function retry_command       # Retry a command up to 3 times before failing
+{
+  local retries="${RETRY_COUNT:-3}"
+  local attempt=1
+  while [ "$attempt" -le "$retries" ]; do
+    if "$@"; then
+      return 0
+    fi
+    printf "Attempt %d/%d failed. " "$attempt" "$retries"
+    attempt=$((attempt + 1))
+    if [ "$attempt" -le "$retries" ]; then
+      printf "Retrying...\n"
+    else
+      printf "Giving up.\n"
+    fi
+  done
+  return 1
+}
+
 function show-hidden-files  # Show hidden files in Finder
 {
   defaults write com.apple.finder AppleShowAllFiles YES; killall Finder
