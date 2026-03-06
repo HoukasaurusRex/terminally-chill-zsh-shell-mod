@@ -1,0 +1,14 @@
+#!/bin/sh
+# Pre-commit hook: runs shellcheck and startup time benchmark
+
+set -e
+
+project_root="$(cd "$(dirname "$0")/../.." >/dev/null 2>&1 || exit; pwd -P)"
+
+printf "Running shellcheck...\n"
+shellcheck -s bash "$project_root/install.sh" "$project_root/revert.sh" "$project_root/scripts/startup-time.sh"
+shellcheck -s bash "$project_root"/lib/.aliases "$project_root"/lib/.bash_profile "$project_root"/lib/.bash_prompt \
+  "$project_root"/lib/.exports "$project_root"/lib/.extra "$project_root"/lib/.functions "$project_root"/lib/.path
+
+printf "\nRunning startup time benchmark...\n"
+"$project_root/scripts/startup-time.sh"

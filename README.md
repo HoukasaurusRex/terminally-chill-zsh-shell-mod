@@ -58,6 +58,20 @@ This will:
 4. Copy the config files from `lib/` to your home directory
 5. Launch a new ZSH session
 
+### Development Setup
+
+To enable pre-commit hooks (shellcheck + startup time benchmark):
+
+```sh
+make setup
+```
+
+To run checks manually:
+
+```sh
+make test
+```
+
 ### Reverting
 
 To restore your previous shell config from the most recent backup:

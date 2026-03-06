@@ -1,4 +1,4 @@
-name: ShellCheck
+name: CI
 
 on:
   push:
@@ -15,5 +15,21 @@ jobs:
         run: sudo apt-get install -y shellcheck
       - name: Lint shell scripts
         run: |
-          shellcheck -s bash install.sh revert.sh
+          shellcheck -s bash install.sh revert.sh scripts/startup-time.sh
           shellcheck -s bash lib/.aliases lib/.bash_profile lib/.bash_prompt lib/.exports lib/.extra lib/.functions lib/.path
+
+  startup-time:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ZSH
+        run: sudo apt-get install -y zsh
+      - name: Copy dotfiles to HOME
+        run: |
+          for file in lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
+            cp "$file" "$HOME"
+          done
+      - name: Benchmark startup time
+        run: ./scripts/startup-time.sh
+        env:
+          STARTUP_TIME_THRESHOLD: 1000
