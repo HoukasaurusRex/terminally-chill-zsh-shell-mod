@@ -3,9 +3,9 @@ export ZSH="$HOME/.oh-my-zsh"
 export EDITOR="nano"
 export TSH_DIR="$HOME/.terminally-chill-shell"
 
-# Lazy-load nvm: only sources nvm on first use of nvm/node/npm/npx
+# Lazy-load nvm: only sources nvm on first use of nvm/node/npm/npx/yarn
 _load_nvm() {
-  unset -f nvm node npm npx
+  unset -f nvm node npm npx yarn
   # shellcheck disable=SC1091
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   # shellcheck disable=SC1091
@@ -15,3 +15,4 @@ nvm() { _load_nvm; nvm "$@"; }
 node() { _load_nvm; node "$@"; }
 npm() { _load_nvm; npm "$@"; }
 npx() { _load_nvm; npx "$@"; }
+yarn() { _load_nvm; yarn "$@"; }
