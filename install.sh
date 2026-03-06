@@ -52,6 +52,11 @@ if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
+# Install Docker if not present
+if ! command -v docker >/dev/null 2>&1; then
+  brew install --cask docker
+fi
+
 # Install Crush CLI if not present
 if ! command -v crush >/dev/null 2>&1; then
   brew install charmbracelet/tap/crush
