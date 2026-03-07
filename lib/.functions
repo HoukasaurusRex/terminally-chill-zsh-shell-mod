@@ -110,3 +110,98 @@ function show-hidden-files  # Show hidden files in Finder
 {
   defaults write com.apple.finder AppleShowAllFiles YES; killall Finder
 }
+
+function mcp-init            # Init jt-mcp-server in current project
+{
+  local settings_dir=".claude"
+  local settings_file="${settings_dir}/settings.json"
+  local claude_md="CLAUDE.md"
+
+  # Step 1 — Ensure .claude directory exists
+  mkdir -p "${settings_dir}"
+
+  # Step 2 — Create or merge .claude/settings.json
+  if [[ ! -f "${settings_file}" ]]; then
+    cat > "${settings_file}" <<'EOF'
+{
+  "mcpServers": {
+    "jt-mcp": {
+      "command": "npx",
+      "args": ["-y", "@houkasaurusrex/jt-mcp-server"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+        "NETLIFY_AUTH_TOKEN": "${NETLIFY_AUTH_TOKEN}"
+      }
+    }
+  }
+}
+EOF
+    echo "${GREEN}Created ${settings_file}${RESET}"
+  elif grep -q '"jt-mcp"' "${settings_file}"; then
+    echo "${YELLOW}jt-mcp already configured in ${settings_file}${RESET}"
+  else
+    if command -v jq &>/dev/null; then
+      local new_server
+      new_server=$(cat <<'EOF'
+{
+  "command": "npx",
+  "args": ["-y", "@houkasaurusrex/jt-mcp-server"],
+  "env": {
+    "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+    "NETLIFY_AUTH_TOKEN": "${NETLIFY_AUTH_TOKEN}"
+  }
+}
+EOF
+      )
+      local tmp_file
+      tmp_file=$(mktemp)
+      jq --argjson new "${new_server}" '.mcpServers["jt-mcp"] = $new' "${settings_file}" > "${tmp_file}" && mv "${tmp_file}" "${settings_file}"
+      echo "${GREEN}Merged jt-mcp into ${settings_file}${RESET}"
+    else
+      echo "${YELLOW}jq not found — please manually add the following to ${settings_file} under \"mcpServers\":${RESET}"
+      cat <<'EOF'
+    "jt-mcp": {
+      "command": "npx",
+      "args": ["-y", "@houkasaurusrex/jt-mcp-server"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+        "NETLIFY_AUTH_TOKEN": "${NETLIFY_AUTH_TOKEN}"
+      }
+    }
+EOF
+    fi
+  fi
+
+  # Step 3 — Add Memory section to CLAUDE.md
+  local memory_section
+  memory_section=$(cat <<'EOF'
+
+## Memory
+
+This project uses `@houkasaurusrex/jt-mcp-server` memory tools. At the start of every session:
+1. Call `memory_query` with no filters to load all stored context
+2. Use the returned entities, observations, and relations to inform your work
+3. When you learn new user preferences or project conventions, store them with `memory_add_entities` and `memory_add_observations`
+EOF
+  )
+
+  if [[ ! -f "${claude_md}" ]]; then
+    printf "# CLAUDE.md\n%s\n" "${memory_section}" > "${claude_md}"
+    echo "${GREEN}Created ${claude_md} with Memory section${RESET}"
+  elif grep -q '## Memory' "${claude_md}"; then
+    echo "${YELLOW}Memory section already exists in ${claude_md}${RESET}"
+  else
+    printf "%s\n" "${memory_section}" >> "${claude_md}"
+    echo "${GREEN}Appended Memory section to ${claude_md}${RESET}"
+  fi
+
+  # Step 4 — Env var warnings
+  if [[ -z "${GITHUB_TOKEN}" ]]; then
+    echo "${YELLOW}${BOLD}Warning:${RESET}${YELLOW} GITHUB_TOKEN is not set${RESET}"
+  fi
+  if [[ -z "${NETLIFY_AUTH_TOKEN}" ]]; then
+    echo "${YELLOW}${BOLD}Warning:${RESET}${YELLOW} NETLIFY_AUTH_TOKEN is not set${RESET}"
+  fi
+
+  echo "${GREEN}${BOLD}jt-mcp-server initialized!${RESET}"
+}
