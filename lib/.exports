@@ -3,14 +3,17 @@ export ZSH="$HOME/.oh-my-zsh"
 export EDITOR="nano"
 export TSH_DIR="$HOME/.terminally-chill-shell"
 
-# Lazy-load nvm: only sources nvm on first use of nvm/node/npm/npx/yarn
+# Lazy-load nvm: only sources nvm on first use of nvm/node/npm/npx/yarn.
 # Each wrapper is self-contained so it works in subshells where _load_nvm
 # might not be inherited.
+#
+# SC1091 is disabled throughout because nvm.sh is an external runtime file
+# installed in the user's home directory — shellcheck cannot follow it at
+# lint time and there is no workaround.
+# shellcheck disable=SC1091
 _load_nvm() {
   unset -f _load_nvm nvm node npm npx yarn
-  # shellcheck disable=SC1091
   [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
-  # shellcheck disable=SC1091
   [ -s "${NVM_DIR:-$HOME/.nvm}/bash_completion" ] && \. "${NVM_DIR:-$HOME/.nvm}/bash_completion"
 }
 # shellcheck disable=SC1091
