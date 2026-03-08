@@ -4,15 +4,22 @@ export EDITOR="nano"
 export TSH_DIR="$HOME/.terminally-chill-shell"
 
 # Lazy-load nvm: only sources nvm on first use of nvm/node/npm/npx/yarn
+# Each wrapper is self-contained so it works in subshells where _load_nvm
+# might not be inherited.
 _load_nvm() {
-  unset -f nvm node npm npx yarn
+  unset -f _load_nvm nvm node npm npx yarn
   # shellcheck disable=SC1091
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
   # shellcheck disable=SC1091
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  [ -s "${NVM_DIR:-$HOME/.nvm}/bash_completion" ] && \. "${NVM_DIR:-$HOME/.nvm}/bash_completion"
 }
-nvm() { _load_nvm; nvm "$@"; }
-node() { _load_nvm; command node "$@"; }
-npm() { _load_nvm; command npm "$@"; }
-npx() { _load_nvm; command npx "$@"; }
-yarn() { _load_nvm; command yarn "$@"; }
+# shellcheck disable=SC1091
+nvm()  { _load_nvm 2>/dev/null || { unset -f nvm node npm npx yarn; [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"; }; nvm "$@"; }
+# shellcheck disable=SC1091
+node() { _load_nvm 2>/dev/null || { unset -f nvm node npm npx yarn; [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"; }; command node "$@"; }
+# shellcheck disable=SC1091
+npm()  { _load_nvm 2>/dev/null || { unset -f nvm node npm npx yarn; [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"; }; command npm "$@"; }
+# shellcheck disable=SC1091
+npx()  { _load_nvm 2>/dev/null || { unset -f nvm node npm npx yarn; [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"; }; command npx "$@"; }
+# shellcheck disable=SC1091
+yarn() { _load_nvm 2>/dev/null || { unset -f nvm node npm npx yarn; [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"; }; command yarn "$@"; }
