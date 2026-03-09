@@ -4,25 +4,53 @@ export EDITOR="nano"
 export TSH_DIR="$HOME/.terminally-chill-shell"
 
 # Lazy-load nvm: only sources nvm on first use of nvm/node/npm/npx/yarn/netlify.
-# Each wrapper is self-contained so it works in subshells where _load_nvm
-# might not be inherited.
+# Each wrapper is fully self-contained — no external helpers — so it works
+# in subshells and Claude Code shell snapshots where only the individual
+# function definition may be captured.
 #
 # SC1091 is disabled throughout because nvm.sh is an external runtime file
 # installed in the user's home directory — shellcheck cannot follow it at
 # lint time and there is no workaround.
-_nvm_cmds="nvm node npm npx yarn netlify ntl"
-# shellcheck disable=SC1091,SC2086
-_load_nvm() {
-  unset -f _load_nvm $_nvm_cmds
+# shellcheck disable=SC1091
+nvm() {
+  unset -f nvm node npm npx yarn netlify ntl 2>/dev/null
   [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
   [ -s "${NVM_DIR:-$HOME/.nvm}/bash_completion" ] && \. "${NVM_DIR:-$HOME/.nvm}/bash_completion"
+  nvm "$@"
 }
-# shellcheck disable=SC1091,SC2086
-_nvm_fallback() { unset -f $_nvm_cmds; [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"; }
-nvm()     { _load_nvm 2>/dev/null || _nvm_fallback; nvm "$@"; }
-node()    { _load_nvm 2>/dev/null || _nvm_fallback; command node "$@"; }
-npm()     { _load_nvm 2>/dev/null || _nvm_fallback; command npm "$@"; }
-npx()     { _load_nvm 2>/dev/null || _nvm_fallback; command npx "$@"; }
-yarn()    { _load_nvm 2>/dev/null || _nvm_fallback; command yarn "$@"; }
-netlify() { _load_nvm 2>/dev/null || _nvm_fallback; command netlify "$@"; }
-ntl()     { _load_nvm 2>/dev/null || _nvm_fallback; command ntl "$@"; }
+# shellcheck disable=SC1091
+node() {
+  unset -f nvm node npm npx yarn netlify ntl 2>/dev/null
+  [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+  command node "$@"
+}
+# shellcheck disable=SC1091
+npm() {
+  unset -f nvm node npm npx yarn netlify ntl 2>/dev/null
+  [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+  command npm "$@"
+}
+# shellcheck disable=SC1091
+npx() {
+  unset -f nvm node npm npx yarn netlify ntl 2>/dev/null
+  [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+  command npx "$@"
+}
+# shellcheck disable=SC1091
+yarn() {
+  unset -f nvm node npm npx yarn netlify ntl 2>/dev/null
+  [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+  command yarn "$@"
+}
+# shellcheck disable=SC1091
+netlify() {
+  unset -f nvm node npm npx yarn netlify ntl 2>/dev/null
+  [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+  command netlify "$@"
+}
+# shellcheck disable=SC1091
+ntl() {
+  unset -f nvm node npm npx yarn netlify ntl 2>/dev/null
+  [ -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ] && \. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+  command ntl "$@"
+}
