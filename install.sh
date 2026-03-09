@@ -77,6 +77,11 @@ if ! command -v yarn >/dev/null 2>&1; then
   corepack enable
 fi
 
+# Install Netlify CLI globally if not present
+if ! command -v netlify >/dev/null 2>&1; then
+  npm install -g netlify-cli
+fi
+
 for file in "$project_root"/lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
   [ -r "$file" ] && cp "$file" "$HOME"
 done
