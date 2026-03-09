@@ -286,14 +286,29 @@ function mcp-init            # Init MCP servers in current project from ~/.mcp-s
     echo "${GREEN}Merged ${server_count} server(s) into ${settings_file}${RESET}"
   fi
 
-  # Step 3 — Add Memory section to CLAUDE.md (if jt-mcp is configured)
+  # Step 3 — Add jt-mcp section to CLAUDE.md (if jt-mcp is configured)
   if jq -e '.mcpServers["jt-mcp"]' "${mcp_file}" &>/dev/null; then
-    local memory_section
-    memory_section=$(cat <<'EOF'
+    local jt_mcp_section
+    jt_mcp_section=$(cat <<'EOF'
 
-## Memory
+## MCP Tools (`@houkasaurusrex/jt-mcp-server`)
 
-This project uses `@houkasaurusrex/jt-mcp-server` memory tools. At the start of every session:
+This project has the following MCP tool categories available. Tools may be deferred — search for them by prefix when needed.
+
+| Prefix | Tools | Purpose |
+|--------|-------|---------|
+| `dev_` | dev_run, dev_port, dev_serve, dev_install, dev_script, dev_deps, dev_worktree, dev_visual_regression | Dev workflow (run commands, manage ports, install deps) |
+| `dev_` | dev_grep, dev_find, dev_read, dev_tree | Search & explore files |
+| `git_` | git_conventional_commit | Conventional commits |
+| `github_` | github_create_pr, github_project_next_issue, github_project_set_status, github_project_complete_issue | GitHub PRs & project boards |
+| `jira_` | jira_search, jira_get_issue, jira_create_issue, jira_transition, jira_add_comment, jira_assign | Jira issue management (requires `acli auth login`) |
+| `confluence_` | confluence_search, confluence_get_page, confluence_create_page, confluence_update_page | Confluence pages (requires ATLASSIAN_* env vars) |
+| `netlify_` | netlify_deploy_status, netlify_build_log, netlify_function_log, netlify_list_deploys, netlify_list_functions | Netlify deploys & functions |
+| `memory_` | memory_query, memory_add_entities, memory_add_relations, memory_add_observations, memory_delete, memory_export, memory_import | Persistent knowledge graph |
+
+### Memory
+
+At the start of every session:
 1. Call `memory_query` with no filters to load all stored context
 2. Use the returned entities, observations, and relations to inform your work
 3. When you learn new user preferences or project conventions, store them with `memory_add_entities` and `memory_add_observations`
@@ -301,13 +316,19 @@ EOF
     )
 
     if [[ ! -f "${claude_md}" ]]; then
-      printf "# CLAUDE.md\n%s\n" "${memory_section}" > "${claude_md}"
-      echo "${GREEN}Created ${claude_md} with Memory section${RESET}"
-    elif grep -q '## Memory' "${claude_md}"; then
-      echo "${YELLOW}Memory section already exists in ${claude_md}${RESET}"
+      printf "# CLAUDE.md\n%s\n" "${jt_mcp_section}" > "${claude_md}"
+      echo "${GREEN}Created ${claude_md} with MCP tools section${RESET}"
+    elif grep -q '## MCP Tools' "${claude_md}"; then
+      echo "${YELLOW}MCP Tools section already exists in ${claude_md}${RESET}"
     else
-      printf "%s\n" "${memory_section}" >> "${claude_md}"
-      echo "${GREEN}Appended Memory section to ${claude_md}${RESET}"
+      # Remove old Memory-only section if present, replace with full section
+      if grep -q '## Memory' "${claude_md}"; then
+        local tmp_file
+        tmp_file=$(mktemp)
+        sed '/^## Memory$/,/^## /{ /^## Memory$/d; /^## /!d; }' "${claude_md}" > "${tmp_file}" && mv "${tmp_file}" "${claude_md}"
+      fi
+      printf "%s\n" "${jt_mcp_section}" >> "${claude_md}"
+      echo "${GREEN}Appended MCP tools section to ${claude_md}${RESET}"
     fi
   fi
 
