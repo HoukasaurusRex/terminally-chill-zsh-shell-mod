@@ -111,70 +111,185 @@ function show-hidden-files  # Show hidden files in Finder
   defaults write com.apple.finder AppleShowAllFiles YES; killall Finder
 }
 
-function mcp-init            # Init jt-mcp-server in current project
+function mcp-add             # Add MCP server to ~/.mcp-servers.json
 {
+  local mcp_file="${HOME}/.mcp-servers.json"
+
+  if ! command -v jq &>/dev/null; then
+    echo "${YELLOW}jq is required. Install with: brew install jq${RESET}"
+    return 1
+  fi
+
+  if [[ ! -f "${mcp_file}" ]]; then
+    echo '{"mcpServers":{}}' > "${mcp_file}"
+  fi
+
+  # JSON mode — accept arg, file path, stdin pipe, or clipboard
+  local input=""
+  if [[ $# -gt 0 ]]; then
+    input="$1"
+    if [[ -f "${input}" ]]; then
+      input=$(cat "${input}")
+    fi
+  elif [[ ! -t 0 ]]; then
+    input=$(cat)
+  fi
+
+  if [[ -n "${input}" ]]; then
+    local servers
+    # Accept {"mcpServers": {...}} or bare {"name": {"command": ...}}
+    servers=$(echo "${input}" | jq -e '.mcpServers // empty' 2>/dev/null)
+    if [[ -z "${servers}" ]]; then
+      # Try bare format: wrap if every value has a "command" key
+      servers=$(echo "${input}" | jq -e 'if all(.[]; has("command")) then . else empty end' 2>/dev/null)
+    fi
+    if [[ -z "${servers}" ]]; then
+      echo "${YELLOW}Invalid JSON. Expected format:${RESET}"
+      echo '  {"mcpServers": {"name": {"command": "...", "args": [...]}}}'
+      echo "${YELLOW}or bare:${RESET}"
+      echo '  {"name": {"command": "...", "args": [...]}}'
+      return 1
+    fi
+    local tmp_file
+    tmp_file=$(mktemp)
+    jq --argjson new "${servers}" '.mcpServers += $new' "${mcp_file}" > "${tmp_file}" && mv "${tmp_file}" "${mcp_file}"
+    echo "${GREEN}Added to ${mcp_file}:${RESET}"
+    echo "${servers}" | jq -r 'keys[]' | while read -r n; do echo "  ${GREEN}+${RESET} ${n}"; done
+  else
+    # Guided mode
+    local name cmd args_str
+    printf "%s" "${BOLD}Server name: ${RESET}"
+    read -r name
+    if [[ -z "${name}" ]]; then
+      echo "${YELLOW}Name is required${RESET}"
+      return 1
+    fi
+    printf "%s" "${BOLD}Command${RESET} (e.g. npx, python, node): "
+    read -r cmd
+    if [[ -z "${cmd}" ]]; then
+      echo "${YELLOW}Command is required${RESET}"
+      return 1
+    fi
+    printf "%s" "${BOLD}Args${RESET} (space-separated, e.g. -y @scope/pkg): "
+    read -r args_str
+    printf "%s\n" "${BOLD}Env vars${RESET} (KEY=VALUE per line, empty to finish):"
+    local env_json="{}"
+    while true; do
+      local kv
+      printf "  "
+      read -r kv
+      if [[ -z "${kv}" ]]; then
+        break
+      fi
+      local key="${kv%%=*}"
+      local val="${kv#*=}"
+      env_json=$(echo "${env_json}" | jq --arg k "${key}" --arg v "${val}" '. + {($k): $v}')
+    done
+
+    local args_json="[]"
+    if [[ -n "${args_str}" ]]; then
+      args_json=$(echo "${args_str}" | jq -R 'split(" ") | map(select(. != ""))')
+    fi
+
+    local server_json
+    server_json=$(jq -n --arg cmd "${cmd}" --argjson args "${args_json}" --argjson env "${env_json}" \
+      'if $env == {} then {command: $cmd, args: $args} else {command: $cmd, args: $args, env: $env} end')
+
+    local tmp_file
+    tmp_file=$(mktemp)
+    jq --arg name "${name}" --argjson server "${server_json}" '.mcpServers[$name] = $server' "${mcp_file}" > "${tmp_file}" && mv "${tmp_file}" "${mcp_file}"
+    echo "${GREEN}Added ${name} to ${mcp_file}${RESET}"
+  fi
+}
+
+function mcp-remove          # Remove MCP server from ~/.mcp-servers.json
+{
+  local mcp_file="${HOME}/.mcp-servers.json"
+
+  if ! command -v jq &>/dev/null; then
+    echo "${YELLOW}jq is required. Install with: brew install jq${RESET}"
+    return 1
+  fi
+
+  if [[ ! -f "${mcp_file}" ]]; then
+    echo "${YELLOW}No MCP servers configured.${RESET}"
+    return 1
+  fi
+
+  if [[ -z "$1" ]]; then
+    echo "Usage: mcp-remove <server-name>"
+    return 1
+  fi
+
+  if ! jq -e --arg name "$1" '.mcpServers[$name]' "${mcp_file}" &>/dev/null; then
+    echo "${YELLOW}Server '$1' not found.${RESET}"
+    return 1
+  fi
+
+  local tmp_file
+  tmp_file=$(mktemp)
+  jq --arg name "$1" 'del(.mcpServers[$name])' "${mcp_file}" > "${tmp_file}" && mv "${tmp_file}" "${mcp_file}"
+  echo "${GREEN}Removed $1 from ${mcp_file}${RESET}"
+}
+
+function mcp-list            # List MCP servers in ~/.mcp-servers.json
+{
+  local mcp_file="${HOME}/.mcp-servers.json"
+
+  if ! command -v jq &>/dev/null; then
+    echo "${YELLOW}jq is required. Install with: brew install jq${RESET}"
+    return 1
+  fi
+
+  if [[ ! -f "${mcp_file}" ]] || [[ "$(jq '.mcpServers | length' "${mcp_file}")" -eq 0 ]]; then
+    echo "${YELLOW}No MCP servers configured. Run ${BOLD}mcp-add${RESET}${YELLOW} to add one.${RESET}"
+    return 0
+  fi
+
+  echo "${BOLD}MCP Servers (${mcp_file}):${RESET}"
+  jq -r '.mcpServers | to_entries[] | "  \(.key)\t\(.value.command) \(.value.args | join(" "))"' "${mcp_file}" | column -t -s $'\t'
+}
+
+function mcp-init            # Init MCP servers in current project from ~/.mcp-servers.json
+{
+  local mcp_file="${HOME}/.mcp-servers.json"
   local settings_dir=".claude"
   local settings_file="${settings_dir}/settings.json"
   local claude_md="CLAUDE.md"
+
+  if ! command -v jq &>/dev/null; then
+    echo "${YELLOW}jq is required. Install with: brew install jq${RESET}"
+    return 1
+  fi
+
+  if [[ ! -f "${mcp_file}" ]] || [[ "$(jq '.mcpServers | length' "${mcp_file}")" -eq 0 ]]; then
+    echo "${YELLOW}No MCP servers configured. Run ${BOLD}mcp-add${RESET}${YELLOW} first.${RESET}"
+    return 1
+  fi
+
+  local server_count
+  server_count=$(jq '.mcpServers | length' "${mcp_file}")
 
   # Step 1 — Ensure .claude directory exists
   mkdir -p "${settings_dir}"
 
   # Step 2 — Create or merge .claude/settings.json
   if [[ ! -f "${settings_file}" ]]; then
-    cat > "${settings_file}" <<'EOF'
-{
-  "mcpServers": {
-    "jt-mcp": {
-      "command": "npx",
-      "args": ["-y", "@houkasaurusrex/jt-mcp-server"],
-      "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
-        "NETLIFY_AUTH_TOKEN": "${NETLIFY_AUTH_TOKEN}"
-      }
-    }
-  }
-}
-EOF
-    echo "${GREEN}Created ${settings_file}${RESET}"
-  elif grep -q '"jt-mcp"' "${settings_file}"; then
-    echo "${YELLOW}jt-mcp already configured in ${settings_file}${RESET}"
+    cp "${mcp_file}" "${settings_file}"
+    echo "${GREEN}Created ${settings_file} with ${server_count} server(s)${RESET}"
   else
-    if command -v jq &>/dev/null; then
-      local new_server
-      new_server=$(cat <<'EOF'
-{
-  "command": "npx",
-  "args": ["-y", "@houkasaurusrex/jt-mcp-server"],
-  "env": {
-    "GITHUB_TOKEN": "${GITHUB_TOKEN}",
-    "NETLIFY_AUTH_TOKEN": "${NETLIFY_AUTH_TOKEN}"
-  }
-}
-EOF
-      )
-      local tmp_file
-      tmp_file=$(mktemp)
-      jq --argjson new "${new_server}" '.mcpServers["jt-mcp"] = $new' "${settings_file}" > "${tmp_file}" && mv "${tmp_file}" "${settings_file}"
-      echo "${GREEN}Merged jt-mcp into ${settings_file}${RESET}"
-    else
-      echo "${YELLOW}jq not found — please manually add the following to ${settings_file} under \"mcpServers\":${RESET}"
-      cat <<'EOF'
-    "jt-mcp": {
-      "command": "npx",
-      "args": ["-y", "@houkasaurusrex/jt-mcp-server"],
-      "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
-        "NETLIFY_AUTH_TOKEN": "${NETLIFY_AUTH_TOKEN}"
-      }
-    }
-EOF
-    fi
+    local tmp_file
+    tmp_file=$(mktemp)
+    jq --slurpfile dotfile "${mcp_file}" \
+      '.mcpServers = ((.mcpServers // {}) + $dotfile[0].mcpServers)' \
+      "${settings_file}" > "${tmp_file}" && mv "${tmp_file}" "${settings_file}"
+    echo "${GREEN}Merged ${server_count} server(s) into ${settings_file}${RESET}"
   fi
 
-  # Step 3 — Add Memory section to CLAUDE.md
-  local memory_section
-  memory_section=$(cat <<'EOF'
+  # Step 3 — Add Memory section to CLAUDE.md (if jt-mcp is configured)
+  if jq -e '.mcpServers["jt-mcp"]' "${mcp_file}" &>/dev/null; then
+    local memory_section
+    memory_section=$(cat <<'EOF'
 
 ## Memory
 
@@ -183,25 +298,29 @@ This project uses `@houkasaurusrex/jt-mcp-server` memory tools. At the start of 
 2. Use the returned entities, observations, and relations to inform your work
 3. When you learn new user preferences or project conventions, store them with `memory_add_entities` and `memory_add_observations`
 EOF
-  )
+    )
 
-  if [[ ! -f "${claude_md}" ]]; then
-    printf "# CLAUDE.md\n%s\n" "${memory_section}" > "${claude_md}"
-    echo "${GREEN}Created ${claude_md} with Memory section${RESET}"
-  elif grep -q '## Memory' "${claude_md}"; then
-    echo "${YELLOW}Memory section already exists in ${claude_md}${RESET}"
-  else
-    printf "%s\n" "${memory_section}" >> "${claude_md}"
-    echo "${GREEN}Appended Memory section to ${claude_md}${RESET}"
+    if [[ ! -f "${claude_md}" ]]; then
+      printf "# CLAUDE.md\n%s\n" "${memory_section}" > "${claude_md}"
+      echo "${GREEN}Created ${claude_md} with Memory section${RESET}"
+    elif grep -q '## Memory' "${claude_md}"; then
+      echo "${YELLOW}Memory section already exists in ${claude_md}${RESET}"
+    else
+      printf "%s\n" "${memory_section}" >> "${claude_md}"
+      echo "${GREEN}Appended Memory section to ${claude_md}${RESET}"
+    fi
   fi
 
   # Step 4 — Env var warnings
-  if [[ -z "${GITHUB_TOKEN}" ]]; then
-    echo "${YELLOW}${BOLD}Warning:${RESET}${YELLOW} GITHUB_TOKEN is not set${RESET}"
-  fi
-  if [[ -z "${NETLIFY_AUTH_TOKEN}" ]]; then
-    echo "${YELLOW}${BOLD}Warning:${RESET}${YELLOW} NETLIFY_AUTH_TOKEN is not set${RESET}"
-  fi
+  jq -r '[.mcpServers[].env // {} | values[]] | unique[]' "${mcp_file}" 2>/dev/null | \
+    sed -n 's/^\${\(.*\)}$/\1/p' | while read -r var_name; do
+    if ! printenv "${var_name}" &>/dev/null; then
+      echo "${YELLOW}${BOLD}Warning:${RESET}${YELLOW} ${var_name} is not set${RESET}"
+    fi
+  done
 
-  echo "${GREEN}${BOLD}jt-mcp-server initialized!${RESET}"
+  echo "${GREEN}${BOLD}MCP servers initialized!${RESET}"
+  jq -r '.mcpServers | keys[]' "${mcp_file}" | while read -r name; do
+    echo "  ${GREEN}+${RESET} ${name}"
+  done
 }

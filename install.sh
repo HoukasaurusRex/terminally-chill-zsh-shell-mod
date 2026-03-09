@@ -21,7 +21,7 @@ printf '\n'
 printf 'Moving old profile into %s %s %s\n' "${YELLOW}" "$HOME/.backup_profiles/$currentDate" "${RESET}"
 printf '\n'
 
-for file in "$HOME"/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
+for file in "$HOME"/.{aliases,bash_profile,bash_prompt,exports,extra,functions,secrets,path,zshrc}; do
   [ -r "$file" ] && cp "$file" "$HOME/.backup_profiles/$currentDate"
 done
 unset file

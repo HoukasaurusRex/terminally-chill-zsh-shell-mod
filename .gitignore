@@ -95,3 +95,7 @@ typings/
 # End of https://www.gitignore.io/api/node
 
 .DS_Store
+
+# Secrets (API keys, tokens) — never commit
+lib/.secrets
+.secrets

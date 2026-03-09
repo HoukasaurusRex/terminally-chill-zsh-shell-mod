@@ -99,6 +99,10 @@ Run `tch` to see all available functions and aliases:
 | `upgrade`              | Update Oh My ZSH to the latest version                           |
 | `show-hidden-files`    | Toggle hidden files visible in macOS Finder                      |
 | `fromhex <hex>`        | Convert a hex color to a tput color index                        |
+| `mcp-add [json]`       | Add an MCP server to `~/.mcp-servers.json` (guided or JSON)      |
+| `mcp-remove <name>`    | Remove an MCP server from `~/.mcp-servers.json`                  |
+| `mcp-list`             | List configured MCP servers                                      |
+| `mcp-init`             | Init MCP servers in current project from `~/.mcp-servers.json`   |
 
 ### Aliases
 
@@ -121,9 +125,31 @@ Extend your shell by editing the corresponding files in [`lib/`](lib):
 | `.aliases`      | Shell aliases                                            |
 | `.functions`    | Shell functions (shown by `tch`)                         |
 | `.extra`        | Color definitions and settings you don't want to commit  |
+| `.secrets`      | API keys and tokens (gitignored, never committed)        |
 | `.bash_profile` | Personal variables (e.g., `GITHUB_USER`)                 |
 | `.bash_prompt`  | Bash fallback prompt (ZSH uses Powerlevel10k)            |
 | `.zshrc`        | Oh My ZSH config, plugins, and theme settings            |
+
+> **Note:** Copy `lib/.secrets.example` to `~/.secrets` and fill in your values. This file is sourced automatically but never committed.
+
+### MCP Servers
+
+Manage [Claude Code](https://claude.ai/code) MCP server configs from a central dotfile (`~/.mcp-servers.json`), then apply them to any project.
+
+```sh
+# Add a server via JSON
+mcp-add '{"mcpServers":{"my-server":{"command":"node","args":["server.js"]}}}'
+
+# Or use the guided prompt
+mcp-add
+
+# List, remove, and init
+mcp-list
+mcp-remove my-server
+mcp-init  # writes ~/.mcp-servers.json into .claude/settings.json
+```
+
+Requires `jq` (`brew install jq`).
 
 ### Performance
 
