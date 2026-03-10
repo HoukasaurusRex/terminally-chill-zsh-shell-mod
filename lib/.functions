@@ -304,7 +304,7 @@ This project has the following MCP tool categories available. Tools may be defer
 | `jira_` | jira_search, jira_get_issue, jira_create_issue, jira_transition, jira_add_comment, jira_assign | Jira issue management (requires `acli auth login`) |
 | `confluence_` | confluence_search, confluence_get_page, confluence_create_page, confluence_update_page | Confluence pages (requires ATLASSIAN_* env vars) |
 | `netlify_` | netlify_deploy_status, netlify_build_log, netlify_function_log, netlify_list_deploys, netlify_list_functions | Netlify deploys & functions |
-| `memory_` | memory_query, memory_add_entities, memory_add_relations, memory_add_observations, memory_delete, memory_export, memory_import | Persistent knowledge graph |
+| `memory_` | memory_query, memory_add_entities, memory_add_relations, memory_add_observations, memory_delete, memory_export, memory_import, memory_track_action, memory_suggest_tools | Persistent knowledge graph |
 
 ### Memory
 
@@ -312,6 +312,14 @@ At the start of every session:
 1. Call `memory_query` with no filters to load all stored context
 2. Use the returned entities, observations, and relations to inform your work
 3. When you learn new user preferences or project conventions, store them with `memory_add_entities` and `memory_add_observations`
+
+### Action Tracking
+
+When performing substantive, repeatable actions (build, test, deploy, lint, format, git workflow),
+call `memory_track_action` with command, description, project, tags, and category.
+Do NOT track trivial commands (ls, cd, file reads, one-off searches).
+
+Periodically call `memory_suggest_tools` to discover patterns worth converting to MCP tools.
 EOF
     )
 
