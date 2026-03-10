@@ -86,6 +86,26 @@ for file in "$project_root"/lib/.{aliases,bash_profile,bash_prompt,exports,extra
   [ -r "$file" ] && cp "$file" "$HOME"
 done
 unset file
+
+# Merge secrets: copy lib/.secrets to ~/.secrets, preserving existing values
+secrets_src="$project_root/lib/.secrets"
+secrets_file="$HOME/.secrets"
+if [ -r "$secrets_src" ]; then
+  if [ ! -f "$secrets_file" ]; then
+    cp "$secrets_src" "$secrets_file"
+    printf 'Created %s\n' "$secrets_file"
+  else
+    # Append export lines whose variable name is not already in ~/.secrets
+    while IFS= read -r line; do
+      var_name=$(printf '%s' "$line" | sed -n 's/^export \([A-Z_]*\)=.*/\1/p')
+      [ -z "$var_name" ] && continue
+      if ! grep -q "$var_name" "$secrets_file"; then
+        printf '%s\n' "$line" >> "$secrets_file"
+        printf 'Added %s to %s\n' "$var_name" "$secrets_file"
+      fi
+    done < "$secrets_src"
+  fi
+fi
 printf '%s' "$MAGENTA"
 	cat <<-'EOF'
   
