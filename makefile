@@ -13,5 +13,5 @@ setup:
 
 test:
 	shellcheck -s bash install.sh revert.sh scripts/startup-time.sh
-	shellcheck -s bash lib/.aliases lib/.bash_profile lib/.bash_prompt lib/.exports lib/.extra lib/.functions lib/.path
+	shellcheck -s bash lib/.aliases lib/.bash_profile lib/.bash_prompt lib/.exports lib/.extra lib/.functions lib/.path lib/.config/husky/init.sh
 	./scripts/startup-time.sh

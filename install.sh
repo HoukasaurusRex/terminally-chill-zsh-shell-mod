@@ -26,6 +26,13 @@ for file in "$HOME"/.{aliases,bash_profile,bash_prompt,exports,extra,functions,s
 done
 unset file
 
+# Backup existing husky init.sh if present
+husky_init="${XDG_CONFIG_HOME:-$HOME/.config}/husky/init.sh"
+if [ -r "$husky_init" ]; then
+  mkdir -p "$HOME/.backup_profiles/$currentDate/.config/husky"
+  cp "$husky_init" "$HOME/.backup_profiles/$currentDate/.config/husky/init.sh"
+fi
+
 # Initialize oh-my-zsh submodule if not populated
 if [ ! -f "$project_root/oh-my-zsh/oh-my-zsh.sh" ]; then
   git -C "$project_root" submodule update --init
@@ -86,6 +93,14 @@ for file in "$project_root"/lib/.{aliases,bash_profile,bash_prompt,exports,extra
   [ -r "$file" ] && cp "$file" "$HOME"
 done
 unset file
+
+# Install husky init.sh for nvm PATH in git hooks (husky v9+)
+husky_init_src="$project_root/lib/.config/husky/init.sh"
+husky_init_dir="${XDG_CONFIG_HOME:-$HOME/.config}/husky"
+if [ -r "$husky_init_src" ]; then
+  mkdir -p "$husky_init_dir"
+  cp "$husky_init_src" "$husky_init_dir/init.sh"
+fi
 
 # Merge secrets: copy lib/.secrets to ~/.secrets, preserving existing values
 secrets_src="$project_root/lib/.secrets"
