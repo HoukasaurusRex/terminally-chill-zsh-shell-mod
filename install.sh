@@ -21,7 +21,7 @@ printf '\n'
 printf 'Moving old profile into %s %s %s\n' "${YELLOW}" "$HOME/.backup_profiles/$currentDate" "${RESET}"
 printf '\n'
 
-for file in "$HOME"/.{aliases,bash_profile,bash_prompt,exports,extra,functions,secrets,path,zshrc}; do
+for file in "$HOME"/.{aliases,bash_profile,bash_prompt,exports,extra,functions,secrets,path,zshenv,zshrc}; do
   [ -r "$file" ] && cp "$file" "$HOME/.backup_profiles/$currentDate"
 done
 unset file
@@ -82,7 +82,7 @@ if ! command -v netlify >/dev/null 2>&1; then
   npm install -g netlify-cli
 fi
 
-for file in "$project_root"/lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshrc}; do
+for file in "$project_root"/lib/.{aliases,bash_profile,bash_prompt,exports,extra,functions,path,zshenv,zshrc}; do
   [ -r "$file" ] && cp "$file" "$HOME"
 done
 unset file
